@@ -1,0 +1,102 @@
+{% extends '../index_master.html'%}
+
+{% block content %}
+<div class="right_col" role="main">
+<h1>Actualizar activos</h1>
+<form action="" method="POST"> 
+    {% csrf_token %}
+    
+
+    <div class="form-group row">
+        <label for="serie" class="col-4 col-form-label">ID Usuario</label> 
+        <div class="col-8">
+          <div class="input-group">
+            <div class="input-group-addon">
+                <i class="fa fa-id-badge"></i>
+              </div>
+
+              <select id="id" name="id" class="form-control">
+                {% for u in stores %}
+                    <option value="{{ u.id }}" {%if u.id == actives_id.id %} selected {% endif %}>{{ u.id }}</option>
+                {% endfor %}
+              </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="descripcion" class="col-4 col-form-label">DESCRIPCIÓN:</label> 
+        <div class="col-8">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <i class="fa fa-sort-numeric-asc"></i>
+              </div>
+            </div> 
+            <input id="descripcion" name="descripcion" type="text" required="required" class="form-control" value="{{  actives_id.description }}">
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="marc_model" class="col-4 col-form-label">Marca/Modelo</label> 
+        <div class="col-8">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <i class="fa fa-500px"></i>
+              </div>
+            </div> 
+            <input id="marc_model" name="marc_model" type="text"  required="required"  class="form-control" value="{{  actives_id.marc_model }}">
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="serie" class="col-4 col-form-label">Serie</label> 
+        <div class="col-8">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <i class="fa fa-modx"></i>
+              </div>
+            </div> 
+            <input id="serie" name="serie" type="text" class="form-control" required="required"  required="required" value="{{  actives_id.serie }}">
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="estado" class="col-4 col-form-label">Estado</label> 
+        <div class="col-8">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <i class="fa fa-battery-half"></i>
+              </div>
+            </div> 
+            <input id="estado" name="estado" type="text"  required="required"  class="form-control" value="{{  actives_id.estade }}" >
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="Observaciones" class="col-4 col-form-label">Observaciones</label> 
+        <div class="col-8">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <i class="fa fa-battery-half"></i>
+              </div>
+            </div> 
+            <input id="Observaciones" name="Observaciones" type="text" required="required"  class="form-control" value="{{  actives_id.observations }}" >
+          </div>
+        </div>
+      </div>
+      
+    
+    <div class="form-group row">
+      <div class="offset-4 col-8">
+        <button name="back" class="btn btn-primary" onclick="history.back(); return false;"> <i class="fa fa-angle-left">Volver</i> </button>
+        <button name="submit" type="submit" class="btn btn-warning" ><i class="fa fa-refresh">Editar Activo</i> </button>
+    
+      </div>
+    </div>
+</div>
+{% endblock %}

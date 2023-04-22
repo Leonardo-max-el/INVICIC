@@ -1,0 +1,53 @@
+{% extends '../index_master.html'%}
+
+{% block content %}
+<div class="right_col" role="main">
+<h1>Lista de Activos</h1>
+
+<form action="" method="POST">
+  {%csrf_token%}
+  <div style="display: inline-block"> 
+
+    <input type="text" name="keyword" id="keyword" class="form-control" style="width: 200px; display: inline-block" style="width: 200px;">
+    <button type="submit" name="search" class="btn btn-success" style="display: inline-block"><i class="fa fa-search"></i></button>
+
+  </div>
+</form>
+<button name="agregar" class="btn btn-primary" onclick="window.location.href='add_actives'"><i class="fa fa-plus"></i>Nuevo activo</button>
+
+<table class="table table-striped border-light">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Descripcion</th>
+        <th scope="col">Marca/modelo</th>
+        <th scope="col">Serie</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Observaciones</th>
+        <th scope="col">Fecha_Registro</th>
+
+      </tr>
+    </thead>
+    <tbody>
+
+    {% for u in stores %}
+      <tr>
+        <th scope="row">{{ u.id  }}</th>
+        <td>{{ u.description }}</td>
+        <td>{{ u.marc_model }}</td>
+        <td>{{ u.serie}}</td>
+        <td>{{ u.estade }}</td>
+        <td>{{ u.observations }}</td>
+        <td>{{ u.fecha_registro }}</td>
+        <td>
+          <button class="btn btn-warning" onclick="window.location.href='update_actives/{{ u.id }}' "><i class="fa fa-refresh"></i> </button>
+          <button class="btn btn-danger" onclick="window.location.href ='delete_actives/{{ u.id }}'"><i class="fa fa-trash"></i> </button>
+
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  
+  </table>
+</div>
+{% endblock %}
