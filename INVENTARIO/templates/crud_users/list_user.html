@@ -41,7 +41,8 @@
         <td>
           <button class="btn btn-warning" onclick="window.location.href='update_user/{{ u.id }}' "><i class="fa fa-refresh"></i> </button>
           <button class="btn btn-danger" onclick="window.location.href='delete_user/{{ u.id }}'"><i class="fa fa-trash"></i> </button>
-
+          <button name="acta" class="btn btn-primary" onclick="window.location.href='acta_entrega/{{ u.id }}'"><i class="fa fa-eye" aria-hidden="true"></i></button>
+          
         </td>
       </tr>
     {% endfor %}

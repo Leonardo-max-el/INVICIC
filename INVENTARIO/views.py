@@ -2,6 +2,11 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import store, Users
 from django.db.models import Q
+from django.urls import reverse
+from django.views.generic import View
+from .utils import render_to_pdf
+from django.shortcuts import get_object_or_404
+
 
 TEMPLATE_DIRS = (
     'os.path.join(BASE_DIR, "templates")'
@@ -13,6 +18,9 @@ TEMPLATE_DIRS = (
 def index (request):
     return render(request, "index.html")
 
+def acta_entrega (request):
+    return render(request, "acta_entrega.html")
+
 def list_actives (request):
     if request.method=='POST':
         word = request.POST.get('keyword')
@@ -20,6 +28,7 @@ def list_actives (request):
 
         if word is not None:
             resultado_busqueda = list.filter(
+                
                  Q(id__icontains=word) |
                  Q(n_serie__icontains=word) | 
                  Q(marca__icontains=word)
@@ -194,8 +203,6 @@ def update_user (request, iduser):
 
 
 
-
-
 def delete_user (request, iduser):
     try:
         if request.method=='POST':
@@ -217,3 +224,14 @@ def delete_user (request, iduser):
         datos = { 'usuarios': users, 'usuario':user }
         return render(request, "crud_users/delete_user.html",datos)
 
+###############REPORTES DE USUARIOS###################
+
+class generar_acta_entrega(View):
+     def get(self, request, iduser, *args,**kwargs):
+        user = get_object_or_404(Users, id=iduser)
+        template_name='acta_entrega.html'
+        data = {
+             'user': user
+         }
+        pdf = render_to_pdf(template_name, data)
+        return HttpResponse(pdf, content_type='application/pdf')

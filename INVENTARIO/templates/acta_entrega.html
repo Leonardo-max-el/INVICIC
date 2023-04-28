@@ -1,0 +1,283 @@
+<!DOCTYPE html> <!-- Declaración del tipo de documento, es decir, HTML5 -->
+<html> <!-- Etiqueta raíz que encierra todo el contenido del documento -->
+  <head> <!-- Sección de metadatos y otros elementos que no se muestran en la página web -->
+    <meta charset="UTF-8"> <!-- Codificación de caracteres del documento -->
+    <title>Título de la página</title> <!-- Título que aparece en la pestaña del navegador -->
+	<style>
+
+	  </style>
+  </head>
+
+  <body> <!-- Sección de contenido visible en la página web -->
+	<head class="cabezera">
+		<img style="float: left" src="https://ucontinental.hiringroom.com/jobs/getSocialShareImage/ucontinental/61c950e49dccb25a860d685b/250/250/profile.gif" alt="Descripción de la imagen" alt="Logo" width:"50" height="50">	
+		<span style="float: left">Centro de Servicios TI</span>
+	</head>
+    <p>Párrafo de texto</p> <!-- Párrafos de texto -->
+    <ul> <!-- Listas no ordenadas -->
+      <li>Elemento de la lista</li>
+      <li>Otro elemento de la lista</li>
+    </ul>
+    <ol> <!-- Listas ordenadas -->
+      <li>Elemento de la lista</li>
+      <li>Otro elemento de la lista</li>
+    </ol>
+    <a href="http://www.example.com">Enlace a otra página web</a> <!-- Enlaces -->
+    <img src="imagen.jpg" alt="Descripción de la imagen"> <!-- Imágenes -->
+  </body>
+</html>
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="UTF-8">
+	<title>Plantilla A4</title>
+	<!-- Agregamos la hoja de estilos de Bootstrap -->
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<style>
+		/* Definimos un estilo para centrar la tabla en el centro de la página */
+		.table-center {
+			margin: 0 auto;
+		}
+	</style>
+    <title>Plantilla A4</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+		height: 800px;
+		background-image: url("../././static/FrWork/admin_lte/build/images/logo.png");
+		background-size: cover;
+		background-size: 25rem;
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-attachment: fixed;
+		
+      }
+
+      .wrapper {
+        width: 210mm;
+        height: 297mm;
+        margin: auto;
+      }
+
+      .content {
+        width: 170mm;
+        height: 257mm;
+        margin: auto;
+        position: relative;
+        top:auto;
+
+      }
+
+      header {
+		text-align: left; /* Cambiamos el texto alineado a la izquierda */
+		padding: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start; /* Ajustamos la justificación al comienzo del contenedor */
+      }
+
+	  header span{
+		font-family: 'Ysabeau', sans-serif;
+	  }
+
+	  div h1 {
+		text-align: right;
+		font-size: 15px;
+		font-style: "Times New Roman";
+		margin-bottom: 60px;
+	  }
+	  .acta {
+		text-align: center;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 30px;
+		margin-bottom:30px;
+	  }
+	  table {
+		font-size: 12px;
+		float: left;
+	  }
+	  
+	  td, th {
+		font-size: 14px;
+	  }
+
+	  .duser{
+		font-weight: bold;
+	  }
+      
+	  .tdate {
+		background-color: rgb(188, 187, 189);
+
+	}
+
+	hr{
+		border-color: rgb(92, 85, 85);
+		border-width: 2px;
+		width: 640px;
+	}
+
+	.entrega{
+		text-align: left;
+		background-color: rgb(42, 109, 22);
+		padding-top: 10px;
+	} -->
+
+	
+    <!-- </style>
+  </head>
+<body>
+
+<div class="wrapper">
+    <header class="fondo">
+        <img src="../././static/FrWork/admin_lte/build/images/conti.png" alt="Logo" width:"50" height="50">
+        <span>Centro de Servicios TI</span>
+    </header>
+      <div class="content">
+			<h1>AEN-HYO-2023-016</h1>
+			<h1 class="acta">Acta de Entrega</h1>
+			<table class="table" >
+			<thead>
+				<tr>
+					<th colspan="2" class="tdate">DATOS PERSONALES</th>
+				</tr>
+			
+			</thead>
+				<tbody>
+				  <tr>
+					<td class="duser" style="width:180px;" >Nombres y Apellidos:</td>
+					<td>{{ user.name }}</td>
+				  </tr>
+				  <tr>
+					<td class="duser">Cargo:</td>
+					<td>{{ user.lastname }}</td>
+				  </tr>
+				  <tr>
+					<td class="duser">Área:</td>
+					<td>Bienestar Universitario</td>
+				  </tr>
+				  <tr>
+					<td class="duser">Tipo:</td>
+					<td>Asignación</td>
+				  </tr>
+			</tbody>
+			</table>
+		  <hr>
+		  <div style="margin-bottom: 30px;" >
+			Se pone a disposicion del colaborador los siguientes recursos informáticos.
+		  </div>
+		  <table class="table" style="text-align:center">
+				<thead>
+					<tr>
+						<th scope="col">UNID</th>
+						<th scope="col">DESCRIPCIÓN</th>
+						<th scope="col">MARCA Y MODELO</th>
+						<th scope="col">SERIE</th>
+						<th scope="col">ESTADO</th>
+						<th scope="col">OBSERVACIONES</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row">1</th>
+						<td>HEADSED</td>
+						<td>PLANTRONICS</td>
+						<td>2KE5CM</td>
+						<td>NUEVO</td>
+						<td>NUEVO</td>
+					</tr>
+				</tbody>
+		  </table>
+
+			<div style="margin-bottom: 80px;" >
+				<p><strong>Nota:</strong> la responsabilidad integra del bien corresponde al que asigna como responsable.</p>
+			</div>
+		  <div style="text-align:right">
+			<p>Huancayo, <span id="fecha"></span></p>
+
+			<script>
+				var fechaActual = new Date();
+				var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+				document.getElementById("fecha").innerHTML = fechaActual.toLocaleDateString('es-PE', options);
+			</script>
+			</div>
+		
+		  <div style="padding-top: 60px;">
+			<table border="1" style="margin-right:52px ;">
+			  <tr>
+				<td style:"padding-bottom:10px">
+				  <strong>
+					<p style="padding-left:60px;padding-top:90px;padding-right:60px">Firma</p>
+				  </strong>
+				</td>
+				<td>
+				  <strong>
+					<p style="padding-left:40px;padding-top:90px;padding-right:40px">Huella</p>
+				  </strong>
+				</td>
+			  </tr>
+			  <tr>
+				<td colspan="2">
+				  <p style="padding-left:80px;padding-right:90px;padding-bottom: 20px;">
+					Nombres Apellidos <br> BRAYAN CARBAJAL
+				  </p>
+				</td>
+			  </tr>
+			</table>
+			 <!-- Agrega la línea horizontal aquí -->
+			<!-- <table border="1">
+				<caption>Entrega </caption>
+				<tr>
+					<td style:"padding-bottom:10px">
+					<strong>
+						<p style="padding-left:60px;padding-top:90px;padding-right:60px">Firma</p>
+					</strong>
+					</td>
+					<td>
+					<strong>
+						<p style="padding-left:40px;padding-top:90px;padding-right:40px">Huella</p>
+					</strong>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<p style="padding-left:80px;padding-right:90px;padding-bottom: 20px;">
+						Nombres Apellidos <br> BRAYAN CARBAJAL
+						</p>
+					</td>
+					</tr>
+			</table>
+      	</div>
+		
+</div>
+	<footer>
+
+	</footer>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </body>
+</html> -->
+
+<!-- <body>
+	<h2>Lista de Usuarios</h2>
+	<h2>Cantidad de usuarios : {{ count }}</h2>
+	<table border="1">
+		<thead>
+			<th>Nombre</th>
+			<th>Apellidos</th>
+		</thead>
+		<tbody>
+
+			<tr>
+				<td>{{ user.name }}</td>
+				<td>{{ user.lastname }}</td>
+			</tr>
+		</tbody>
+
+	</table>
+</body> -->
