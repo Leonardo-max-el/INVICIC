@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+    <style>
+        body{
+            margin-top: 10px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+        }
+    </style>
+  </head>
+  <body>
+<!-- Required meta tags -->
+<table cellpadding="1" cellspacing="1" style="width:287px">
+	<tbody>
+		<tr>
+			<td style="text-align:center; width:50px"><img alt="" src="https://ucontinental.hiringroom.com/jobs/getSocialShareImage/ucontinental/61c950e49dccb25a860d685b/250/250/profile.gif" style="height:50px; width:50px" /></td>
+			<td style="width:222px"><span style="font-size:16px">Centro de Servicios de TI</span></td>
+		</tr>
+	</tbody>
+</table>
+
+<p style="text-align:right"><span style="font-size:14px"><span style="font-family:Georgia,serif">AEN-HYO-2023-016</span></span></p>
+
+<p style="text-align:center">&nbsp;</p>
+
+<p style="text-align:center"><strong><span style="font-size:22px">Acta de Entrega</span></strong></p>
+
+<p style="text-align:center">&nbsp;</p>
+
+<table cellpadding="1" cellspacing="1" style="width:1072px">
+	<tbody>
+		<tr>
+			<td style="background-color: rgb(122, 121, 121);" colspan="2"><span style="font-size:14px">DATOS DEL COLABORADOR</span></td>
+		</tr>
+        
+		<tr>
+			<td style="width:226px"><span style="font-size:14px"><strong>Nombres y Apellidos:</strong></span></td>
+			<td style="width:833px"><span style="font-size:14px">{{ user.name }} {{ user.lastname }}</span></td>
+		</tr>
+		<tr>
+			<td style="width:226px"><span style="font-size:14px"><strong>Cargo:</strong></span></td>
+			<td style="width:833px"><span style="font-size:14px">{{ user.post }}</span></td>
+		</tr>
+		<tr>
+			<td style="width:226px"><span style="font-size:14px"><strong>&Aacute;rea</strong></span></td>
+			<td style="width:833px"><span style="font-size:14px">{{ user.area }}</span></td>
+		</tr>
+		<tr>
+			<td style="width:226px"><span style="font-size:14px"><strong>Tipo:</strong></span></td>
+			<td style="width:833px"><span style="font-size:14px">Asignacion</span></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<hr />
+<p><span style="font-size:16px">Se pone a disposicion del colaborador los siguientes recursos inform&aacute;ticos.</span></p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:1070px">
+	<tbody>
+        {% for activo in activos %}
+        <tr>
+            <tr>
+                <td style="text-align:center; width:131px">UNID.</td>
+                <td style="text-align:center; width:185px">DESCRIPCI&Oacute;N</td>
+                <td style="text-align:center; width:148px">MARCA Y MODELO</td>
+                <td style="text-align:center; width:235px">SERIE</td>
+                <td style="text-align:center; width:191px">ESTADO</td>
+                <td style="text-align:center; width:147px">OBSERVACIONES</td>
+            </tr>
+            <tr>
+                <td style="text-align:center; width:131px">{{ activo.description }}</td>
+                <td style="text-align:center; width:185px">{{ activo.marc }}</td>
+                <td style="text-align:center; width:148px"></td>
+                <td style="text-align:center; width:235px"></td>
+                <td style="text-align:center; width:191px"></td>
+                <td sty
+            
+        </tr>
+        {% endfor %}
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+  </body>
+</html>

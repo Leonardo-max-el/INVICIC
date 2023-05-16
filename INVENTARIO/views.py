@@ -4,7 +4,8 @@ from .models import store, Users
 from django.db.models import Q
 from django.urls import reverse
 from django.views.generic import View
-from .utils import render_to_pdf
+from django.template.loader import get_template 
+from xhtml2pdf import pisa
 from django.shortcuts import get_object_or_404
 
 
@@ -226,12 +227,47 @@ def delete_user (request, iduser):
 
 ###############REPORTES DE USUARIOS###################
 
-class generar_acta_entrega(View):
-     def get(self, request, iduser, *args,**kwargs):
-        user = get_object_or_404(Users, id=iduser)
-        template_name='acta_entrega.html'
-        data = {
-             'user': user
-         }
-        pdf = render_to_pdf(template_name, data)
-        return HttpResponse(pdf, content_type='application/pdf')
+# class generar_acta_entrega(View):
+#      def get(self, request, iduser, *args,**kwargs):
+#         user = get_object_or_404(Users, id=iduser)
+#         template_name='acta_entrega.html'
+#         data = {
+#              'user': user
+#          }
+#         pdf = render_to_pdf(template_name, data)
+#         return HttpResponse(pdf, content_type='application/pdf')
+
+
+
+def generar_acta_entrega(request, iduser):
+    usuario = get_object_or_404(Users, pk=iduser)
+    activos = store.objects.all()
+    if request.method == 'POST':
+        activos_seleccionados = request.POST.getlist('activos[]')
+        activos_entregados = [store.objects.get(pk=iduser) for iduser in activos_seleccionados]
+        # generar acta de entrega con los activos entregados y el ID del usuario
+        template_path = 'Documents/archivo_pdf.html'
+        context = {'user': usuario, 'activos': activos_entregados}
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'filename="Documents/archivo_pdf.html"'
+        template = get_template(template_path)
+        html = template.render(context)
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('Error al generar el PDF')
+        return response
+    else:
+        context = {'user': usuario, 'activos': activos}
+        return render(request, 'Documents/acta_entrega.html', context)
+    
+
+
+# def generar_acta_entrega(request, iduser):
+#     user = get_object_or_404(Users, pk=iduser)
+#     activos = store.objects.all()
+#     context = {
+#         'user': user,
+#         'activos': activos
+#     }
+#     return render(request, 'Documents/acta_entrega.html', context)
+

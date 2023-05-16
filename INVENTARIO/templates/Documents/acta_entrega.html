@@ -2,7 +2,10 @@
 
 {% block content %}
 <div class="right_col" role="main">
-<h1>Lista de Activos</h1>
+  <div>	 
+    <h3>Acta de Entrega para: {{ user.name }} {{ user.lastname }}</h3>
+
+   </div>
 
 <form action="" method="POST">
   {%csrf_token%}
@@ -12,7 +15,7 @@
     <button type="submit" name="search" class="btn btn-success" style="display: inline-block"><i class="fa fa-search"></i></button>
 
   </div>
-</form>
+
 <button name="agregar" class="btn btn-primary" onclick="window.location.href='add_actives'"><i class="fa fa-plus"></i>Nuevo activo</button>
 
 <table class="table table-striped border-light">
@@ -25,13 +28,13 @@
         <th scope="col">Estado</th>
         <th scope="col">Observaciones</th>
         <th scope="col">Fecha_Registro</th>
-
+        <th>Seleccionar</th>
 
       </tr>
     </thead>
     <tbody>
 
-    {% for u in stores %}
+    {% for u in activos %}
       <tr>
         <th scope="row">{{ u.id  }}</th>
         <td>{{ u.description }}</td>
@@ -40,16 +43,17 @@
         <td>{{ u.estade }}</td>
         <td>{{ u.observations }}</td>
         <td>{{ u.fecha_registro }}</td>
+        <td><input type="checkbox" name="activo" value="{{ u.id }}"></td>
 
-        <td>
-          <button class="btn btn-warning" onclick="window.location.href='update_actives/{{ u.id }}' "><i class="fa fa-refresh"></i> </button>
-          <button class="btn btn-danger" onclick="window.location.href ='delete_actives/{{ u.id }}'"><i class="fa fa-trash"></i> </button>
-
-        </td>
+        
       </tr>
     {% endfor %}
     </tbody>
-  
+
   </table>
+  <!-- <button type="submit" class="btn btn-success" href="generar_acta_entrega/{{ u.id }}">Generar Acta</button>
+  <input type="checkbox" name="activo-{{ u.id }}" value="{{ u.id }}" form="form-activos"> -->
+  <button type="submit" class="btn btn-primary">Generar PDF</button>
+</form>
 </div>
 {% endblock %}
