@@ -1,0 +1,22 @@
+{% extends 'index_master.html'%}
+
+{% block content %}
+
+<div class="right_col" role="main">
+    <h1>Importar Usuarios -</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="excel_usuarios">
+        <button type="submit" class="btn btn-success" onclick="showAlertAndRedirect('Archivos importados correctamente', '{% url 'list_user' %}')">Importar Usuarios</button>
+
+        <script>
+            function showAlertAndRedirect(message, redirectUrl) {
+                alert(message);
+                window.location.href = redirectUrl;  // Utiliza la URL pasada como argumento
+            }
+        </script>
+    </form>
+</div>
+{% endblock %}
+

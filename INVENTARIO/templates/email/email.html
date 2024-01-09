@@ -1,0 +1,30 @@
+{% extends 'index_master.html'%}
+
+{% block content %}
+
+<div class="right_col" role="main">
+
+    <h1>Enviar Correo</h1>
+
+      <form method="post" action="{% url 'email' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+
+        <label for="email">Correo Electrónico:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <input type="file" name="pdf_file" accept=".pdf" required>
+        <br>
+        <h1>
+          
+        </h1>
+
+        <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left"> Volver</i> </button>
+        <input class="btn btn-success" type="submit"  value="Enviar" >
+
+    </form>
+    
+      
+        
+</div>
+{% endblock %}

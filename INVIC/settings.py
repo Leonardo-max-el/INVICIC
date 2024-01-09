@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.utils.translation',
     'INVENTARIO',
 ]
 
@@ -77,7 +78,7 @@ WSGI_APPLICATION = 'INVIC.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'INVIC_DB',
+        'NAME': 'test',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',
@@ -89,7 +90,18 @@ DATABASES = {
         # 'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+#Configuracion para el envio de correo Electronico
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'lquito@continental.edu.pe'
+EMAIL_HOST_PASSWORD = 'qrqs seyq jiol kbjr'
+
+
+PER_PAGE = 10
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -113,9 +125,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
@@ -131,3 +143,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+

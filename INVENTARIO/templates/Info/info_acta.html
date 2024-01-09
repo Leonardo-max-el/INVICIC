@@ -1,0 +1,57 @@
+{% extends 'index_master.html'%}
+
+{% block content %}
+
+<div class="right_col" role="main">
+
+    <h1>Mis actas de entrega</h1>
+        
+        
+
+    <h2>Usuario: {{ user.name }} {{ user.lastname }}</h2>
+        
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Fecha de registro de actas</th>
+                <th scope="col">Botones</th>
+    
+              </tr>
+            </thead>
+            <tbody>
+                {% for acta in actas_entrega %}
+              <tr>
+               
+                    <td>
+                        <li>
+                            <a href="{{  acta.archivo_pdf.url }}" target="_blank"> Acta de entrega {{ acta.fecha_registro }} </a>
+                        </li>
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'delete_ActaEntrega' acta.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-danger" type="submit" >Eliminar</button>
+                        </form>
+                    </td>
+         
+                        
+        
+                    
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>    
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left"> Volver</i> </button>
+            <button type="submit" class="btn btn-success"> <i class="fa fa-upload"></i> Subir Acta de Entrega</button>
+            <button class="btn btn-info" onclick="window.location.href='envio_email'"><i class="fa fa-envelope-o"></i> Enviar Correo</button>
+        </form>
+
+
+       
+    </div>
+{% endblock %}

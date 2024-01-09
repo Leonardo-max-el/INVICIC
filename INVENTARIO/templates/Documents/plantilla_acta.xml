@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<acta-entrega>
+    <titulo>Hoalalala</titulo>
+    <fecha>Fecha: [Fecha]</fecha>
+    <entregado-a>Entregado a: [Nombre del receptor]</entregado-a>
+    <activos>
+        <activo>
+            <descripcion>Descripción: [Descripción]</descripcion>
+            <modelo>Helloo</modelo>
+            <!-- Otros campos -->
+        </activo>
+        <!-- Puedes tener más elementos <activo> según sea necesario -->
+    </activos>
+</acta-entrega>

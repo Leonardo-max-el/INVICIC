@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 
 
 class work(models.Model):
@@ -41,13 +41,25 @@ class Users(models.Model):
     area = models.CharField(max_length=60,null=False)
     post = models.CharField(max_length=60,null=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
-
+    store = models.ForeignKey(store, on_delete=models.CASCADE, null= True)
 
     class Meta:
         db_table = 'users'
 
     def __str__(self):
         return self.name
+
+
+class ActaEntrega(models.Model):
+    id = models.AutoField(primary_key=True)
+    Users = models.ForeignKey(Users, on_delete=models.CASCADE)  # Establece la relación con la tabla de usuarios
+    archivo_pdf = models.FileField(upload_to='actas_entrega_pdfs/')
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    
+    def __str__(self):
+        return f'Acta de entrega para {self.usuario.name} {self.usuario.lastname}'
+
 
 
 class delivery_record(models.Model):
@@ -64,10 +76,11 @@ class delivery_record(models.Model):
 
 
 
+# tabla agregaba para controlar el contador de actas
 
 
-
-
+class Contador(models.Model):
+    valor = models.IntegerField(default=0)
 
 
 

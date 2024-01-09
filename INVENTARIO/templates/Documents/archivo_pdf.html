@@ -1,98 +1,225 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
   <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Título de la plantilla</title>
+    
+    <link rel="stylesheet" href="../INVIC/INVENTARIO/static/FrWork/admin_lte/build/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200&display=swap" rel="stylesheet">
+    <!-- Aquí puedes agregar enlaces a tus archivos CSS y JavaScript -->
+    
+    <script src="script.js"></script>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
-    <style>
-        body{
-            margin-top: 10px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            margin-left: 10px;
-        }
-    </style>
   </head>
   <body>
-<!-- Required meta tags -->
-<table cellpadding="1" cellspacing="1" style="width:287px">
-	<tbody>
-		<tr>
-			<td style="text-align:center; width:50px"><img alt="" src="https://ucontinental.hiringroom.com/jobs/getSocialShareImage/ucontinental/61c950e49dccb25a860d685b/250/250/profile.gif" style="height:50px; width:50px" /></td>
-			<td style="width:222px"><span style="font-size:16px">Centro de Servicios de TI</span></td>
-		</tr>
-	</tbody>
-</table>
+    <!-- Contenido de la plantilla -->
+    <header>
+        <div class="contenedor" >
+            <div class="hijo"><img src="../INVIC/INVENTARIO/static/FrWork/admin_lte/build/images/logoIC.png" alt="Girl in a jacket" width="250" height="50"></div>
+        </div>
+    </header>
 
-<p style="text-align:right"><span style="font-size:14px"><span style="font-family:Georgia,serif">AEN-HYO-2023-016</span></span></p>
+    <nav>
 
-<p style="text-align:center">&nbsp;</p>
+      <div class="">
 
-<p style="text-align:center"><strong><span style="font-size:22px">Acta de Entrega</span></strong></p>
-
-<p style="text-align:center">&nbsp;</p>
-
-<table cellpadding="1" cellspacing="1" style="width:1072px">
-	<tbody>
-		<tr>
-			<td style="background-color: rgb(122, 121, 121);" colspan="2"><span style="font-size:14px">DATOS DEL COLABORADOR</span></td>
-		</tr>
+        <p class="contador1">AEN-HYO-{% now "Y" %}-1-0{{ contador }}</p>
         
-		<tr>
-			<td style="width:226px"><span style="font-size:14px"><strong>Nombres y Apellidos:</strong></span></td>
-			<td style="width:833px"><span style="font-size:14px">{{ user.name }} {{ user.lastname }}</span></td>
-		</tr>
-		<tr>
-			<td style="width:226px"><span style="font-size:14px"><strong>Cargo:</strong></span></td>
-			<td style="width:833px"><span style="font-size:14px">{{ user.post }}</span></td>
-		</tr>
-		<tr>
-			<td style="width:226px"><span style="font-size:14px"><strong>&Aacute;rea</strong></span></td>
-			<td style="width:833px"><span style="font-size:14px">{{ user.area }}</span></td>
-		</tr>
-		<tr>
-			<td style="width:226px"><span style="font-size:14px"><strong>Tipo:</strong></span></td>
-			<td style="width:833px"><span style="font-size:14px">Asignacion</span></td>
-		</tr>
-	</tbody>
-</table>
+      </div>
+    </nav>
 
-<p>&nbsp;</p>
+    <section>
+      <p class="acta">Acta de Entrega</p>
+    </section>
 
-<hr />
-<p><span style="font-size:16px">Se pone a disposicion del colaborador los siguientes recursos inform&aacute;ticos.</span></p>
 
-<table border="1" cellpadding="1" cellspacing="1" style="width:1070px">
-	<tbody>
-        {% for activo in activos %}
-        <tr>
-            <tr>
-                <td style="text-align:center; width:131px">UNID.</td>
-                <td style="text-align:center; width:185px">DESCRIPCI&Oacute;N</td>
-                <td style="text-align:center; width:148px">MARCA Y MODELO</td>
-                <td style="text-align:center; width:235px">SERIE</td>
-                <td style="text-align:center; width:191px">ESTADO</td>
-                <td style="text-align:center; width:147px">OBSERVACIONES</td>
-            </tr>
-            <tr>
-                <td style="text-align:center; width:131px">{{ activo.description }}</td>
-                <td style="text-align:center; width:185px">{{ activo.marc }}</td>
-                <td style="text-align:center; width:148px"></td>
-                <td style="text-align:center; width:235px"></td>
-                <td style="text-align:center; width:191px"></td>
-                <td sty
+
+    <div class="contenedor-datos">
+      <div class="tapa2">
+        <strong><p>DATOS DEL COLABORADOR</p></strong>
+      </div>
+      <div>
+        <span><strong>Nombres y Apellidos:</strong></span>
+         <span class="nombre"><span class="espacionombre">__</span>  {{ user.name }} {{ user.lastname }}</span>
+      </div>
+      <div>
+        <span><strong>Cargo:</strong></span>
+        <span class=""><span class="espacionombre1">_______________</span> {{ user.post }}</span>
+      </div>
+      <div>
+        <span><strong>&Aacute;rea:</strong></span>
+        <span class=""> <span class="espacionombre">________________</span> {{ user.area }}</span>
+      </div>
+      <div>
+        <span><strong>Tipo:</strong></span>
+        <span class=""><span class="espacionombre">________________</span> Asignacion</span>
+      </div>
+    </div>
+
+    <div class="separador-central">
+      <div>
+        <span class="separador">____________________________________________________________________________________________________________</span>
+      </div>
+        <div class="recursos">
+        <p>A continuación, se detallan los recursos informáticos</p>
+      </div>
+    </div>
+    
+
+    <div>
+       <div class="cabezera-central">
+          <div class="cabezera1">
+             <span class="unidad">UNID.</span>    
+           </div>
+           <div class="cabezera2">
+              <span class="">DESCRIPCI&Oacute;N</span>       
+            </div>
+            <div class="cabezera3">
+               <span class="">MARCA Y MODELO</span>       
+            </div>
             
-        </tr>
-        {% endfor %}
-	</tbody>
-</table>
+            <div class="cabezera4">
+               <span class="">N° SERIE</span>       
+            </div>
 
-<p>&nbsp;</p>
+            <div class="cabezera5">
+               <span class="">ESTADO</span>       
+            </div>
+            <div class="cabezera6">
+                <span class="">OBSERVACIONES</span>       
+            </div>
+        </div>
+    
+             
+        <div class="cuerpoprincipal" >
+            {% for activo in activos %}
 
+              <div class="cuerpo1">
+                <span class="">1</span>
+              </div>
+
+              <div class="cuerpo2">
+                <span class="descripcion">{{ activo.description }}</span>
+              </div>
+
+              <div class="cuerpo3">
+                <span class="">{{ activo.marc_model }}</span>
+              </div>
+
+              <div class="cuerpo4">
+                <span class="">{{ activo.serie }}</span>
+              </div>
+                    
+              <div class="cuerpo5">
+                <span class="">{{ activo.estade }}</span>
+              </div>
+
+              <div class="cuerpo6">
+                  <span class="">{{ activo.observations }}</span>
+              </div>
+      
+              {% endfor %}
+        </div>
+   
+    </div>
+
+
+
+      <div class="terminos-condiciones">
+        <div>
+          <span><p>El presente documento deja constancia de que los recursos fueron entregados y recepcionados sin observaciones.</p></span>
+        </div>
+        <div class="nota">
+          <p><strong>IMPORTANTE:</strong><br> Por favor revisen la politica de activos fijos, pues este equipo se encuentra bajo su responsabilidad. <a href="#">https://conecta.continental.edu.pe/</a></p>
+        </div>
+        <div class="fecha">
+          <p>Huancayo, {% now "l, d " %}de {% now "F" %} de {% now "Y" %} </p>
+        </div> 
+      </div>
+
+
+      <div>
+        <div class="encabezado-entrega">
+          <strong><span>Entrega:</span></strong>
+   
+        </div>
+        <div class="encabezado-recibe">
+          <strong><span>Recibe:</span></strong>
+    
+        </div>
+      </div>
+
+      
+        <div class="Entrega-acta">
+
+          
+            <div class="firma">
+              <span>FIRMA</span>
+            </div>
+            <div class="huella">
+              <span>HUELLA</span>
+            </div>
+            <div class="contenedor-huella">
+                <span>. <br></span>
+            </div>
+            <div class="apellidos-nombres">
+              <span class="centrar"><strong>RUDDY HINOSTROZA MARTIN</strong> <br>SOPORTE Y RECURSOS TECNOLOGICOS</span>
+            </div>
+        </div>
+
+
+        <div >
+          <div class="huella2">
+            <span>.</span>
+          </div>
+          <div class="firma1">
+          <span>FIRMA</span>
+          </div> 
+
+          <div class="contenedor-huella2">
+            <span>HUELLA</span>
+          </div>
+
+          <div class="apellidos-nombres1">
+            <span class="centrar"><span class="centrar"><strong>{{ user.name }} {{ user.lastname }}</strong> <br>{{ user.area }}</span></span>
+          </div>
+        </div>
+
+      <div>
+        <div class="v-line" style="color: white;">
+          <br>
+          <span>|</span>
+          
+        </div>
+
+        <div class="v-line1">
+          <span>|</span>
+        </div>
+
+
+      </div>
+
+      <footer>
+        <div class="barraabajo">
+          <div class="barrauno">
+            <p style="color:rgb(0, 0, 0)">.</p>
+          </div>
+          <div class="barrados">
+            <p style="color:rgb(0, 0, 0)">.</p>
+          </div>
+          <div class="continental">
+            <p>
+              ucontinental.edu.pe <br>
+              <strong> Teléfono:</strong>(064) 481430
+            </p>
+          </div>
+      </div> 
+      </footer>
+      
   </body>
 </html>
+

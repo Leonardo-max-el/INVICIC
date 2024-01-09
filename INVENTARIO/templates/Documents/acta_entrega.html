@@ -35,7 +35,7 @@
     <tbody>
 
     {% for u in activos %}
-      <tr>
+      <tr style="text-transform: uppercase;">
         <th scope="row">{{ u.id  }}</th>
         <td>{{ u.description }}</td>
         <td>{{ u.marc_model }}</td>
@@ -51,9 +51,9 @@
     </tbody>
 
   </table>
-  <!-- <button type="submit" class="btn btn-success" href="generar_acta_entrega/{{ u.id }}">Generar Acta</button>
-  <input type="checkbox" name="activo-{{ u.id }}" value="{{ u.id }}" form="form-activos"> -->
-  <button type="submit" class="btn btn-primary">Generar PDF</button>
+  <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left""> Volver</i> </button>
+  <button type="submit" class="btn btn-primary"  class="fa fa-file" name="generar_acta"><i class="fa fa-file"></i> Generar PDF</button>
+
 </form>
 </div>
 {% endblock %}
