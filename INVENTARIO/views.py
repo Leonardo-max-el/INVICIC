@@ -47,10 +47,12 @@ def list_actives (request):
 
         if word is not None:
             resultado_busqueda = list.filter(
+                 
+                Q(id__icontains=word) |
+                Q(description__icontains=word)|
+                Q(marc_model__icontains=word)|
+                Q(serie__icontains=word) 
                 
-                 Q(id__icontains=word) |
-                 Q(n_serie__icontains=word) | 
-                 Q(marca__icontains=word)
             )
 
             datos = {'stores': resultado_busqueda}
@@ -149,7 +151,7 @@ def list_user (request):
     if request.method == 'POST':
         palabra = request.POST.get('keyword')
         lista = Users.objects.all()
-        users_per_page = 10
+   
 
         if palabra is not None:
             resultado_busqueda = lista.filter(
@@ -158,18 +160,7 @@ def list_user (request):
                     Q(lastname__icontains = palabra) |
                     Q(area__icontains=palabra)
             )
-
-            paginator = Paginator(lista, users_per_page)
-            page = request.GET.get('page')
-            usuarios = paginator.get_page(page)
-            try:
-                users = paginator.page(page)
-            except PageNotAnInteger:
-                # Si la página no es un número entero, muestra la primera página.
-                users = paginator.page(1)
-            except EmptyPage:
-                # Si la página está fuera de rango, muestra la última página.
-                users = paginator.page(paginator.num_pages)
+        
 
 
             datos = { 'usuarios': resultado_busqueda }
@@ -302,31 +293,6 @@ def delete_user (request, iduser):
 #         return render(request, 'Documents/acta_entrega.html', context)
 
 
-def agregar_tabla_firma(doc, nombre_usuario):
-    # Agregar el nombre del usuario
-    doc.add_paragraph(f"Nombre del Usuario: {nombre_usuario}")
-
-    # Añadir una tabla con 2 columnas
-    table = doc.add_table(rows=1, cols=2)
-    table.style = 'Table Grid'
-    table.autofit = True
-
-    # Establecer el ancho de las celdas en la primera fila (en centímetros)
-    ancho_firma = Cm(10.75)  # 50% del ancho total
-    ancho_huella = Cm(10.75)  # 50% del ancho total
-    table.rows[0].cells[0].width = ancho_firma
-    table.rows[0].cells[1].width = ancho_huella
-
-    # Encabezados de tabla
-    headings = table.rows[0].cells
-    headings[0].text = 'Firma'
-    headings[1].text = 'Huella Dactilar'
-
-    # Agregar fila para la firma y la huella dactilar
-    row_cells = table.add_row().cells
-    row_cells[0].text = ''
-    row_cells[1].text = ''
-
 
 
 def generar_acta_entrega(request, iduser):
@@ -398,7 +364,7 @@ def generar_acta_entrega(request, iduser):
             
         #Agregar filas con datos de activos
         # for activo_entregado in activos_entregados:
-        #     row_cells = table.add_row().cells
+        #     row_cells = table.add_row().cepara la ciudadlls
         #     row_cells[0].text = "1"  # Aquí asignas "1" a la primera celda de cada fila
         #     row_cells[1].text = activo_entregado.description
         #     row_cells[2].text = activo_entregado.marc_model
@@ -445,7 +411,7 @@ def generar_acta_entrega(request, iduser):
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
         response['Content-Disposition'] = f'attachment; filename=acta_entrega_{contador}.docx'
         response.write(document_buffer.read())
-
+        
         return response
     else:
         context = {'user': usuario, 'activos': activos, 'contador': contador}
