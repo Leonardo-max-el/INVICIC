@@ -4,24 +4,16 @@ from .models import store, Users, ActaEntrega,Contador
 from django.db.models import Q
 from .models import Contador
 from .forms import ActaEntregaForm
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import EmailMessage
 from io import BytesIO
 from datetime import datetime
 
-from docx.oxml import OxmlElement
 from docx.shared import RGBColor
 from docx.oxml.ns import nsdecls
-from docx.oxml import parse_xml
-from docx.oxml import OxmlElement
-from docx.oxml.ns import qn
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
 
-from docx import Document
-from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docxtpl import DocxTemplate
-from docx.shared import Cm
 
 import pandas as pd
 import xml.etree.ElementTree as ET
@@ -33,6 +25,18 @@ TEMPLATE_DIRS = (
 
 #CREATE-DELETE-LIST AND UPDATE MODEL ACTIVE--->
 #===============#===========================#
+
+def data_user(request,iduser):
+
+    user = get_object_or_404(Users, pk=iduser)
+    
+    context={
+        'user':user
+    }
+        
+    
+    return render(request,"Documents/data_user.html",context)
+    
 
 def index (request):
     return render(request, "index.html")
@@ -147,31 +151,33 @@ def delete_actives  (request, idactive):
 #************************#***************************************************#
 
 
-def list_user (request):
+
+def list_user(request):
     if request.method == 'POST':
         palabra = request.POST.get('keyword')
         lista = Users.objects.all()
-   
 
         if palabra is not None:
             resultado_busqueda = lista.filter(
-                    Q(id__icontains=palabra) |
-                    Q(name__icontains= palabra) |
-                    Q(lastname__icontains = palabra) |
-                    Q(area__icontains=palabra)
+                Q(id__icontains=palabra) |
+                Q(area_de_trabajo__icontains=palabra) |
+                Q(sub_area_de_trabajo__icontains=palabra) |
+                Q(codigo_de_personal__icontains=palabra) |
+                Q(apellidos_y_nombres_adryan__icontains=palabra) |
+                Q(tipo_de_jornada_adryan__icontains=palabra)   
+
+
             )
-        
 
-
-            datos = { 'usuarios': resultado_busqueda }
+            datos = {'usuarios': resultado_busqueda}
             return render(request, "crud_users/list_user.html", datos)
         else:
-            datos = { 'usuarios': lista }
+            datos = {'usuarios': lista}
             return render(request, "crud_users/list_user.html", datos)
 
     else:
-        users = Users.objects.order_by('id')[:10]
-        datos = { 'usuarios': users }
+        usuarios = Users.objects.order_by('id')[:10]
+        datos = {'usuarios': usuarios}
         return render(request, "crud_users/list_user.html", datos)
 
 
@@ -250,49 +256,6 @@ def delete_user (request, iduser):
 
 ###############REPORTES DE USUARIOS###################
 
-#Acta de Entrega PDF
-
-# def generar_acta_entrega(request, iduser):
-#     usuario = get_object_or_404(Users, pk=iduser)
-#     activos = store.objects.all()
-
-#     contador_obj, created = Contador.objects.get_or_create(id=1)
-#     contador = contador_obj.valor
-
-#     if request.method == 'POST' and 'generar_acta' in request.POST:
-#         activos_seleccionados = request.POST.getlist('activo')
-#         activos_entregados = store.objects.filter(pk__in=activos_seleccionados)
-
-#         # Incrementar el contador
-#         contador_obj.valor += 1
-#         contador_obj.save()
-#         contador = contador_obj.valor 
-
-#         # Convertir campos a mayúsculas antes de guardar
-#         for activo_entregado in activos_entregados:
-#             for field in ['description', 'marc_model', 'serie', 'estade', 'observations']:
-#                 setattr(activo_entregado, field, getattr(activo_entregado, field).upper())
-#             activo_entregado.save()
-
-#         # Generar acta de entrega con los activos entregados y el ID del usuario
-#         template_path = 'Documents/archivo_pdf.html'
-#         context = {'user': usuario, 'activos': activos_entregados, 'contador': contador}
-#         response = HttpResponse(content_type='application/pdf')
-#         response['Content-Disposition'] = 'filename="acta_entrega.pdf"'
-#         template = get_template(template_path)
-#         html = template.render(context)
-        
-#         # Generar PDF
-#         pisa_status = pisa.CreatePDF(html, dest=response)
-#         if pisa_status.err:
-#             return HttpResponse('Error al generar el PDF')
-        
-#         return response
-#     else:
-#         context = {'user': usuario, 'activos': activos, 'contador': contador}
-#         return render(request, 'Documents/acta_entrega.html', context)
-
-
 
 
 def generar_acta_entrega(request, iduser):
@@ -347,12 +310,12 @@ def generar_acta_entrega(request, iduser):
 
         # Encabezados de tabla
         headings = table.rows[0].cells
-        headings[0].text = 'Cantidad'
-        headings[1].text = 'Descripción'
-        headings[2].text = 'Modelo'
-        headings[3].text = 'Serie'
-        headings[4].text = 'Estado'
-        headings[5].text = 'Observaciones'
+        headings[0].text = 'CANTIDAD'
+        headings[1].text = 'DESCRIPCION'
+        headings[2].text = 'MODELO'
+        headings[3].text = 'CODIGO PATRIMONIO'
+        headings[4].text = 'SERIE'
+        headings[5].text = 'OBSERVACIONES'
 
         # Cambiar el color del fondo del encabezado a negro
         for cell in headings:
@@ -421,120 +384,48 @@ def generar_acta_entrega(request, iduser):
 
 ##AREA DE PRUEBAS##
 
-# def generar_acta_entrega(request, iduser):
-#     usuario = get_object_or_404(Users, pk=iduser)
-#     activos = store.objects.all()
-
-#     contador_obj, created = Contador.objects.get_or_create(id=1)
-#     contador = contador_obj.valor
-
-#     if request.method == 'POST' and 'generar_acta' in request.POST:
-#         activos_seleccionados = request.POST.getlist('activo')
-#         activos_entregados = store.objects.filter(pk__in=activos_seleccionados)
-
-#         # Ruta del archivo XML de entrada (plantilla)
-#         template_path = './INVENTARIO/templates/Documents/plantilla_acta.xml'
-
-#         # Generar acta de entrega con los activos entregados
-#         doc = Document()
-
-#         # Añadir encabezado
-#         title = doc.add_heading('Acta de Entrega', level=1)
-#         title.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-
-#         # Añadir fecha
-#         doc.add_paragraph('Fecha: [Fecha]')
-
-#         # Añadir destinatario
-#         doc.add_paragraph('Entregado a: [Nombre del receptor]')
-
-#         # Añadir lista de activos
-#         activos = [
-#             {'descripcion': 'Descripción Activo 1', 'modelo': 'Modelo 1'},
-#             {'descripcion': 'Descripción Activo 2', 'modelo': 'Modelo 2'},
-#             # Puedes agregar más elementos a la lista según sea necesario
-#         ]
-
-#         for activo in activos:
-#             doc.add_paragraph(f'Descripción: {activo["descripcion"]}')
-#             doc.add_paragraph(f'Modelo: {activo["modelo"]}')
-#             doc.add_paragraph()  # Párrafo en blanco entre activos
-
-#         # Guardar el documento en un BytesIO para luego devolverlo como HttpResponse
-#         document_buffer = BytesIO()
-#         doc.save(document_buffer)
-#         document_buffer.seek(0)
-
-
-#         # Devolver el documento como una respuesta para que el navegador lo descargue
-#         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-#         response['Content-Disposition'] = f'attachment; filename=acta_entrega_{contador}.docx'
-#         response.write(document_buffer.read())
-
-#         return response
-#     else:
-#         context = {'user': usuario, 'activos': activos, 'contador': contador}
-#         return render(request, 'Documents/acta_entrega.html', context)
-
-
 ##########################
-# def generar_acta_entrega(request, iduser):
-#     usuario = get_object_or_404(Users, pk=iduser)
-#     activos = store.objects.all()
-
-#     contador_obj, created = Contador.objects.get_or_create(id=1)
-#     contador = contador_obj.valor
-
-#     if request.method == 'POST' and 'generar_acta' in request.POST:
-#         activos_seleccionados = request.POST.getlist('activo')
-#         activos_entregados = store.objects.filter(pk__in=activos_seleccionados)
-
-#         # Incrementar el contador
-#         contador_obj.valor += 1
-#         contador_obj.save()
-#         contador = contador_obj.valor 
-
-#         doc = Document()
-
-#         # Añadir encabezado centrado
-#         title = doc.add_heading('Acta de Entrega', level=1)
-#         title.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER  # Centrar el título
-
-#         # Añadir fecha
-#         doc.add_paragraph('Fecha: [Fecha]')
-
-#         # Añadir destinatario
-#         doc.add_paragraph('Entregado a: [Nombre del receptor]')
-
-#         # Leer contenido HTML desde el archivo
-#         with open('./INVENTARIO/templates/Documents/archivo_pdf.html', 'r') as html_file:
-#             html_content = html_file.read()
-
-#          # Convertir HTML a DOCX utilizando pypandoc
-#         converted_content = pypandoc.convert_text(html_content, 'docx', format='html')
-#         doc.add_paragraph(converted_content)
-
-#         # Guardar el documento en un BytesIO para luego devolverlo como HttpResponse
-#         document_buffer = BytesIO()
-#         doc.save(document_buffer)
-#         document_buffer.seek(0)
-
-#         # Devolver el documento como una respuesta para que el navegador lo descargue
-#         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-#         response['Content-Disposition'] = f'attachment; filename=acta_entrega_{contador}.docx'
-#         response.write(document_buffer.read())
-        
-#         return response
-#     else:
-#         context = {'user': usuario, 'activos': activos, 'contador': contador}
-#         return render(request, 'Documents/acta_entrega.html', context)
-
 
 
 #----------------------EXPORTAR E IMPORTAR ARCHIVOS--------------------#
 
 
 
+
+
+
+# def import_usuarios(request):
+#     if request.method == 'POST':
+#         excel_file = request.FILES.get('excel_usuarios')
+
+#         if excel_file and excel_file.name.endswith('.xlsx'):
+#             # Leer el archivo Excel
+#             df = pd.read_excel(excel_file)
+
+#             if 'full_name' in df.columns and 'corporate_email' in df.columns and 'gender' in df.columns and 'hire_date' in df.columns and 'generation' in df.columns and 'immediate_hierarchical_boss' in df.columns:
+#                 # Iterar a través de las filas del DataFrame y crear nuevos usuarios
+#                 for index, row in df.iterrows():
+#                     user = Users(
+#                         name=row['NAME'],
+#                         lastname=row['LASTNAME'],
+#                         gmail=row['GMAIL'],
+#                         area=row['AREA'],
+#                         post=row['POST']
+#                     )                          
+#                     user.save()
+
+          
+#             return redirect('list_user')
+
+
+#     return render(request, 'reports/Importar/usuarios.html')  
+
+    # name = models.CharField(max_length=30,null=False)
+    # lastname = models.CharField(max_length=30, null=False)
+    # gmail = models.CharField(max_length=50, default=None)
+    # area = models.CharField(max_length=60,null=False)
+    # post = models.CharField(max_length=60,null=True)
+    # fecha_registro = models.DateTimeField(auto_now_add=True)
 
 
 
@@ -545,25 +436,59 @@ def import_usuarios(request):
         if excel_file and excel_file.name.endswith('.xlsx'):
             # Leer el archivo Excel
             df = pd.read_excel(excel_file)
-
-            if 'NAME' in df.columns and 'LASTNAME' in df.columns and 'GMAIL' in df.columns and 'AREA' in df.columns and 'POST' in df.columns:
+            
+            # if all(col in df.columns for col in ['Planilla', 'Unidad de negocio','Área de trabajo','Sub Área de trabajo',
+            #                                      'Ubicación Física', 'Local','Naturaleza de puesto','Nomenclatura de puesto',
+            #                                      'Tipo de puesto','Motivo de alta','Código de personal']):
+                
+            if all(col in df.columns for col in ['Planilla', 'Unidad de negocio','Área de trabajo','Sub Área de trabajo',
+                                                 'Ubicación Física','Local','Naturaleza de puesto','Nomenclatura de puesto',
+                                                 'Tipo de puesto','Motivo de alta','Código de personal','Apellidos y nombres (ADRYAN)',
+                                                 'Género (ADRYAN)','Fecha de ingreso','Tipo de contrato (ADRYAN)','Tipo de jornada (ADRYAN)',
+                                                 'Nacionalidad (ADRYAN)','Tiempo de servicio (años)','Tiempo de servicio (meses)',
+                                                 'Tiempo de servicio (días)','Correo corporativo (ADRYAN)','Fecha de nacimiento (ADRYAN)',
+                                                 'Edad (ADRYAN)','Generación (ADRYAN)','Jefe inmediato jerárquico',
+                                                 'Reemplaza a']):
                 # Iterar a través de las filas del DataFrame y crear nuevos usuarios
-                for index, row in df.iterrows():
-                    user = Users(
-                        name=row['NAME'],
-                        lastname=row['LASTNAME'],
-                        gmail=row['GMAIL'],
-                        area=row['AREA'],
-                        post=row['POST']
-                    )                          
-                    user.save()
+                
+            #Brinda a la fecha el formato deseado
+                df['Fecha de ingreso'] = pd.to_datetime(df['Fecha de ingreso'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')
+                df['Fecha de nacimiento (ADRYAN)'] = pd.to_datetime(df['Fecha de nacimiento (ADRYAN)'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')
 
-          
+                for index, row in df.iterrows():
+                    usuario = Users(
+                        planilla=row['Planilla'],
+                        unidad_de_negocio= row['Unidad de negocio'],
+                        area_de_trabajo=row['Área de trabajo'],
+                        sub_area_de_trabajo=row['Sub Área de trabajo'],
+                        ubicacion_fisica=row['Ubicación Física'],
+                        local=row['Local'],
+                        naturaleza_de_puesto=row['Naturaleza de puesto'],
+                        nomenclatura_de_puesto=row['Nomenclatura de puesto'],
+                        tipo_de_puesto=row['Tipo de puesto'],
+                        motivo_de_alta=row['Motivo de alta'],
+                        codigo_de_personal=row['Código de personal'],
+                        apellidos_y_nombres_adryan=row['Apellidos y nombres (ADRYAN)'],
+                        genero_adryan=row['Género (ADRYAN)'],
+                        fecha_de_ingreso=row['Fecha de ingreso'],
+                        tipo_de_contrato_adryan=row['Tipo de contrato (ADRYAN)'],
+                        tipo_de_jornada_adryan=row['Tipo de jornada (ADRYAN)'],
+                        nacionalidad_adryan=row['Nacionalidad (ADRYAN)'],
+                        tiempo_de_servicio_anios=row['Tiempo de servicio (años)'],
+                        tiempo_de_servicio_meses=row['Tiempo de servicio (meses)'],
+                        tiempo_de_servicio_dias=row['Tiempo de servicio (días)'],
+                        correo_corporativo_adryan=row['Correo corporativo (ADRYAN)'],
+                        fecha_de_nacimiento_adryan=row['Fecha de nacimiento (ADRYAN)'],
+                        edad_adryan=row['Edad (ADRYAN)'],
+                        generacion_adryan=row['Generación (ADRYAN)'],
+                        jefe_inmediato_jerarquico=row['Jefe inmediato jerárquico'],
+                        reemplaza_a=row['Reemplaza a']
+                    )
+                    usuario.save()
+
             return redirect('list_user')
 
-
-    return render(request, 'reports/Importar/usuarios.html')  
-
+    return render(request, 'reports/Importar/usuarios.html')
 
 
 def import_activos(request):
