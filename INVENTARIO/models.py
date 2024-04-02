@@ -10,28 +10,44 @@ class work(models.Model):
 
 class Meta:
 
-    verbose_name_plural = "woks"
+    verbose_name_plural = "works"
 
 def __str__(self):
-    return self.name
+    return self.apellidos_y_nombres
 
-    
+class prueba (models.Model):
+    hola = models.CharField(max_length=50, null=False),
 
-class store(models.Model):
+
+# store
+class activo(models.Model):
     
     id = models.BigAutoField(primary_key=True)
-    description = models.CharField(max_length=100,null=False, default=None)
-    marc_model = models.CharField(max_length=100,null=False,default=None)
-    serie = models.CharField(max_length=100,null=False,default=None)
-    estade = models.CharField(max_length=50, null=False, default=None)
-    observations = models.CharField(max_length=200, null=False,default=None)
-    fecha_registro = models.DateTimeField(auto_now_add=True)
+    sede = models.CharField(max_length=50, default='')
+    pabellon = models.CharField(max_length=5, default='')
+    tipo_ambiente = models.CharField(max_length=20, default='')
+    ambiente = models.CharField(max_length=100,  default='')
+    direccion = models.CharField(max_length=50, default='')
+    distrito = models.CharField(max_length=50, default='')
+    serie = models.CharField(max_length=50, default='')
+    codigo_inventario = models.CharField(max_length=50, default='')
+    categoria = models.CharField(max_length=50, default='')
+    marca = models.CharField(max_length=50, default='')
+    descripcion = models.TextField()  # Cambiado a TextField
+    modelo = models.CharField(max_length=50, default='')
+    hostname = models.CharField(max_length=50, default='hs')
+    estado = models.CharField(max_length=50, default='')
+    renta = models.CharField(max_length=5, default='')
+    contrato = models.CharField(max_length=50, default='')
+    estado_renta = models.CharField(max_length=50, default='')
+    proveedor = models.CharField(max_length=50, default='')
+    devolucion = models.CharField(max_length=50, default='')
 
     class Meta:
-        db_table = 'store'
+        db_table = 'activo'
 
     def __str__(self):
-        return self.name
+        return self.apellidos_y_nombres_adryan
 
 
 class Users(models.Model):
@@ -63,7 +79,7 @@ class Users(models.Model):
     generacion_adryan = models.CharField(max_length=50, default='')
     jefe_inmediato_jerarquico = models.CharField(max_length=100, default='')
     reemplaza_a = models.CharField(max_length=100, default='')
-    store = models.ForeignKey(store, on_delete=models.CASCADE, null= True)
+    activo = models.ForeignKey(activo, on_delete=models.CASCADE, null= True)
     
 
 
@@ -71,16 +87,9 @@ class Users(models.Model):
         db_table = 'users'
 
     def __str__(self):
-        return self.name
+        return self.apellidos_y_nombres_adryan
 
 
-
-    # name = models.CharField(max_length=30,null=False)
-    # lastname = models.CharField(max_length=30, null=False)
-    # gmail = models.CharField(max_length=50, default=None)
-    # area = models.CharField(max_length=60,null=False)
-    # post = models.CharField(max_length=60,null=True)
-    # fecha_registro = models.DateTimeField(auto_now_add=True)
 
 class ActaEntrega(models.Model):
     id = models.AutoField(primary_key=True)
@@ -90,7 +99,7 @@ class ActaEntrega(models.Model):
 
     
     def __str__(self):
-        return f'Acta de entrega para {self.usuario.name} {self.usuario.lastname}'
+        return f'Acta de entrega para {self.usuario.apellidos_y_nombres_adryan}'
 
 
 
@@ -104,7 +113,7 @@ class delivery_record(models.Model):
         verbose_name_plural='delivery_record'
 
     def __str__(self):
-        return self.name
+        return self.apellidos_y_nombres_adryan
 
 
 

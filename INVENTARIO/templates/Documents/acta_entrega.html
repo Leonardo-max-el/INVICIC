@@ -26,8 +26,6 @@
         <th scope="col">Marca/modelo</th>
         <th scope="col">Serie</th>
         <th scope="col">Estado</th>
-        <th scope="col">Observaciones</th>
-        <th scope="col">Fecha_Registro</th>
         <th>Seleccionar</th>
 
       </tr>
@@ -37,12 +35,11 @@
     {% for u in activos %}
       <tr style="text-transform: uppercase;">
         <th scope="row">{{ u.id  }}</th>
-        <td>{{ u.description }}</td>
-        <td>{{ u.marc_model }}</td>
+        <td>{{ u.descripcion }}</td>
+        <td>{{ u.modelo }}</td>
         <td>{{ u.serie}}</td>
-        <td>{{ u.estade }}</td>
-        <td>{{ u.observations }}</td>
-        <td>{{ u.fecha_registro }}</td>
+        <td>{{ u.estado }}</td>
+
         <td><input type="checkbox" name="activo" value="{{ u.id }}"></td>
 
         

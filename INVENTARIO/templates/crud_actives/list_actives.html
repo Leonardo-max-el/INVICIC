@@ -19,31 +19,36 @@
     <thead>
       <tr>
         <th scope="col">#</th>
+        <th scope="col">Modelo</th>
+        <th scope="col">Serie/modelo</th>
+        <th scope="col">Codigo Inventario</th>
         <th scope="col">Descripcion</th>
-        <th scope="col">Marca/modelo</th>
-        <th scope="col">Serie</th>
-        <th scope="col">Estado</th>
-        <th scope="col">Observaciones</th>
-        <th scope="col">Fecha_Registro</th>
+        <th scope="col">Ambiente</th>
+        <th scope="col">Dirección</th>
+   
 
 
       </tr>
     </thead>
     <tbody>
 
-    {% for u in stores %}
+    {% for u in activos %}
       <tr style="text-transform: uppercase;">
         <th scope="row">{{ u.id  }}</th>
-        <td>{{ u.description }}</td>
-        <td>{{ u.marc_model }}</td>
+        <td>{{ u.modelo }}</td>
         <td>{{ u.serie}}</td>
-        <td>{{ u.estade }}</td>
-        <td>{{ u.observations }}</td>
-        <td>{{ u.fecha_registro }}</td>
+        <td>{{ u.codigo_inventario }}</td>
+        <td>{{ u.descripcion }}</td>
+        <td>{{ u.ambiente }}</td>
+        <td>{{ u.direccion }}</td>
 
         <td>
           <button class="btn btn-warning" onclick="window.location.href='update_actives/{{ u.id }}' "><i class="fa fa-refresh"></i> </button>
           <button class="btn btn-danger" onclick="window.location.href ='delete_actives/{{ u.id }}'"><i class="fa fa-trash"></i> </button>
+
+
+          <button name="acta" class="btn btn-primary" onclick="window.location.href='data_activo/{{ u.id }}'"><i class="fa fa-eye" aria-hidden="true"></i></button> 
+          <button class="btn btn-info" onclick="window.location.href='info_acta/{{ u.id }}'"><i class="fa fa-envelope-o"></i> </button>
 
         </td>
       </tr>
