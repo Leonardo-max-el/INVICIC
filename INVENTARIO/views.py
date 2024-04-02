@@ -504,6 +504,7 @@ def import_activos(request):
                 for index, row in df.iterrows():
                     activo = store(
                         description=row['DESCRIPTION'],
+                        #HOLAAAAAAAAAA
                         marc_model=row['MARC_MODEL'],
                         serie=row['SERIE'],
                         estade=row['ESTADE'],
