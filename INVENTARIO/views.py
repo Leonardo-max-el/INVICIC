@@ -506,6 +506,7 @@ def import_activos(request):
                         description=row['DESCRIPTION'],
                         #HOLAAAAAAAAAA
                         #AVANCE DE 03/04/2023
+                        #PRUEBA DE GUARDADO DE ACTIVE_USER_VIEWDATA
                         marc_model=row['MARC_MODEL'],
                         serie=row['SERIE'],
                         estade=row['ESTADE'],
