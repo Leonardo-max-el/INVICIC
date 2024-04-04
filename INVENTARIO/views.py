@@ -505,6 +505,7 @@ def import_activos(request):
                     activo = store(
                         description=row['DESCRIPTION'],
                         #HOLAAAAAAAAAA
+                        #AVANCE DE 03/04/2023
                         marc_model=row['MARC_MODEL'],
                         serie=row['SERIE'],
                         estade=row['ESTADE'],
