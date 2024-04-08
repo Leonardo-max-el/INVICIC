@@ -17,40 +17,11 @@
 <table class="table table-striped table-light border-light">
   <thead>
     <tr>
-      {% comment %} <th scope="col">#</th>
-      <th scope="col">Planilla</th>
-      <th scope="col">Unidad de Negocio</th>
-      <th scope="col">Área de trabajo</th>
-      <th scope="col">Sub Área de trabajo</th>
-      <th scope="col">Ubicación Física</th>
-      <th scope="col">Local</th>
-      <th scope="col">Naturaleza de puesto</th>
-      <th scope="col">Nomenclatura de puesto</th>
-      <th scope="col">Tipo de puesto</th>
-      <th scope="col">Motivo de alta</th>
-      <th scope="col">Código de personal</th> 
-      <th scope="col">Apellidos y nombres (ADRYAN)</th>
-      <th scope="col">Género (ADRYAN)</th>
-      <th scope="col">Fecha de ingreso</th>
-      <th scope="col">Tipo de contrato (ADRYAN)</th>
-      <th scope="col">Tipo de jornada (ADRYAN)</th>
-      <th scope="col">Nacionalidad (ADRYAN)</th>
-      <th scope="col">Tiempo de servicio (años)</th>
-      <th scope="col">Tiempo de servicio (meses)</th>
-      <th scope="col">Tiempo de servicio (días)</th>
-      <th scope="col">Correo corporativo (ADRYAN)</th>
-      <th scope="col">Fecha de nacimiento (ADRYAN) </th>
-      <th scope="col">Edad (ADRYAN) </th>
-      <th scope="col">Generación (ADRYAN)</th>
-      <th scope="col">Jefe inmediato jerárquico</th>
-      <th scope="col">Reemplaza a</th>   {% endcomment %}
 
       <th scope="col">Apellidos y nombres (ADRYAN)</th>
       <th scope="col">Correo corporativo (ADRYAN)</th>
       <th scope="col">Área de trabajo</th>
       <th scope="col">Ubicación Física</th>
-
-
 
 
     </tr>
@@ -65,37 +36,6 @@
       <td>{{ u.area_de_trabajo }}</td>
       <td>{{ u.ubicacion_fisica }}</td>
     
-
-      {% comment %} <th scope="row">{{ u.id }}</th>
-      <td>{{ u.planilla }}</td>
-      <td>{{ u.unidad_de_negocio }}</td>
-      <td>{{ u.area_de_trabajo }}</td>
-      <td>{{ u.sub_area_de_trabajo }}</td>
-      <td>{{ u.ubicacion_fisica }}</td>
-      <td>{{ u.local }}</td>
-      <td>{{ u.naturaleza_de_puesto }}</td> 
-      <td>{{ u.nomenclatura_de_puesto }}</td>
-      <td>{{ u.tipo_de_puesto }}</td>  
-      <td>{{ u.motivo_de_alta }}</td>  
-      <td>{{ u.codigo_de_personal }}</td> 
-      <td>{{ u.apellidos_y_nombres_adryan }}</td> 
-      <td>{{ u.genero_adryan }}</td>
-      <td>{{ u.fecha_de_ingreso }}</td>
-      <td>{{ u.tipo_de_contrato_adryan }}</td>
-      <td>{{ u.tipo_de_jornada_adryan }}</td>
-      <td>{{ u.nacionalidad_adryan }}</td>
-      <td>{{ u.tiempo_de_servicio_anios }}</td>  
-      <td>{{ u.tiempo_de_servicio_meses }}</td>
-      <td>{{ u.tiempo_de_servicio_dias }}</td>
-      <td>{{ u.correo_corporativo_adryan }}</td>
-      <td>{{ u.fecha_de_nacimiento_adryan }}</td>  
-      <td>{{ u.edad_adryan }}</td>
-      <td>{{ u.generacion_adryan }}</td>
-      <td>{{ u.jefe_inmediato_jerarquico }}</td>  
-      <td>{{ u.reemplaza_a }}</td>
-      
-
-       {% endcomment %}
       <td>
         <button class="btn btn-warning" onclick="window.location.href='update_user/{{ u.id }}' "><i class="fa fa-refresh"></i> </button>
         <button class="btn btn-danger" onclick="window.location.href='delete_user/{{ u.id }}'"><i class="fa fa-trash"></i> </button>

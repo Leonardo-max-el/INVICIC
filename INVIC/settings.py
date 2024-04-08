@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'INVIC.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'INVENTARIOIC',
+        'NAME': 'inventarioic',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',

@@ -1,8 +1,8 @@
 from django.contrib import admin
-from INVENTARIO.models import store,Users
+from INVENTARIO.models import Users,activo
 
 
-admin.site.register(store)
+admin.site.register(activo)
 admin.site.register(Users)
 
 

@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse, Http404
-from .models import store, Users, ActaEntrega,Contador
+from .models import activo, Users, ActaEntrega,Contador
 from django.db.models import Q
 from .models import Contador
 from .forms import ActaEntregaForm
@@ -19,12 +19,83 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import locale
 
+from docx.oxml import parse_xml
+
+from django.contrib.auth import login as django_login
+
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm  
+from django.contrib.auth.models import  User
+from django.contrib.auth import login,logout,authenticate
+from django.db import  IntegrityError
+
 TEMPLATE_DIRS = (
     'os.path.join(BASE_DIR, "templates")'
 )
 
 #CREATE-DELETE-LIST AND UPDATE MODEL ACTIVE--->
 #===============#===========================#
+
+def index (request):
+    return render(request, "index.html")
+
+
+def register (request):
+    
+    if request.method == 'GET':
+        return render (request, 'acces_user/register.html',{
+            'form':UserCreationForm
+        })
+    
+    else:
+        if request.POST['password1']== request.POST['password2']:
+            #register user
+           try: 
+                user = User.objects.create_user(
+                username=request.POST['username'],
+                password=request.POST['password1'])
+                user.save()
+                login(request,user)
+                return  redirect('index') 
+           except IntegrityError:  
+                return render (request, 'acces_user/register.html',{
+                    'form': UserCreationForm,
+                    "error":'Username already exists'
+                })
+
+
+        return render(request, 'acces_user/register.html',{
+            'form':UserCreationForm,
+            "error":'Password do not match'
+        })             
+        
+def clouses(request):
+     
+     logout(request)
+     return redirect('Documents/data_user.html')
+     
+    
+    
+    
+def login(request):
+    if request.method == 'GET':
+        return render(request, 'acces_user/login.html',
+                      {
+                          'form':AuthenticationForm
+                      })
+    else:
+        user = authenticate(request, username=request.POST['username'], password=request.POST
+                     ['password'])
+        
+        if user is None:
+            return render(request, 'acces_user/login.html',{
+                'form': AuthenticationForm,
+                'error': 'username or password is incorrect'
+            })
+        else:
+             django_login(request, user)  
+             return redirect('index')
+
+
 
 def data_user(request,iduser):
 
@@ -37,9 +108,17 @@ def data_user(request,iduser):
     
     return render(request,"Documents/data_user.html",context)
     
+def data_activo(request, idactivo):
+    
+    activos = get_object_or_404(activo, pk=idactivo)
+    
+    context = {
+        'activo':activos
+    }
+    
+    return render(request, "Documents/data_activo.html",context)
 
-def index (request):
-    return render(request, "index.html")
+
 
 def acta_entrega (request):
     return render(request, "acta_entrega.html")
@@ -47,27 +126,27 @@ def acta_entrega (request):
 def list_actives (request):
     if request.method=='POST':
         word = request.POST.get('keyword')
-        list = store.objects.all()
+        list = activo.objects.all()
 
         if word is not None:
             resultado_busqueda = list.filter(
                  
                 Q(id__icontains=word) |
-                Q(description__icontains=word)|
-                Q(marc_model__icontains=word)|
-                Q(serie__icontains=word) 
+                Q(serie__icontains=word)|
+                Q(codigo_inventario__icontains=word)|
+                Q(hostname__icontains=word) 
                 
             )
 
-            datos = {'stores': resultado_busqueda}
+            datos = {'activos': resultado_busqueda}
             return render(request, "crud_actives/list_actives.html",datos)
         else:
-            datos = {'stores' : list}
+            datos = {'activos' : list}
             return render(request, "crud_actives/list_actives.html",datos)
 
     else:
-        active = store.objects.order_by('-id')[:10] 
-        datos = {'stores' : active}
+        active = activo.objects.order_by('-id')[:10] 
+        datos = {'activos' : active}
         return render(request, "crud_actives/list_actives.html",datos)
 
 
@@ -76,7 +155,7 @@ def add_actives (request):
     if request.method=='POST':
         if request.POST.get ('descripcion') and request.POST.get ('marc_model') and request.POST.get('serie') and request.POST.get('estado')  and request.POST.get('Observaciones'):
             
-            active = store()
+            active = activo()
             active.description = request.POST.get('descripcion')
             active.marc_model = request.POST.get('marc_model')
             active.serie = request.POST.get('serie')
@@ -95,10 +174,10 @@ def update_actives (request, idactive  ):
             if request.POST.get('id') and request.POST.get ('descripcion') and request.POST.get ('marc_model') and request.POST.get('serie') and request.POST.get('estado')  and request.POST.get('Observaciones') :
             
                 user_id_old = request.POST.get('id')
-                user_old = store()
-                user_old = store.objects.get(id = user_id_old )
+                user_old = active()
+                user_old = active.objects.get(id = user_id_old )
                 
-                active = store()
+                active = active()
                 active.id = request.POST.get('id')
                 active.description = request.POST.get('descripcion')
                 active.marc_model = request.POST.get('marc_model')
@@ -111,15 +190,15 @@ def update_actives (request, idactive  ):
             
         else:
             
-            active = store.objects.all()
-            actives_id = store.objects.get(id = idactive)
-            datos = {'stores' : active, 'actives_id': actives_id}
+            active = active.objects.all()
+            actives_id = active.objects.get(id = idactive)
+            datos = {'activos' : active, 'actives_id': actives_id}
             return render(request, "crud_actives/update_actives.html",datos)
 
-    except store.DoesNotExist:
-        active = store.objects.all()
+    except active.DoesNotExist:
+        active = active.objects.all()
         actives_id = None
-        datos = {'stores' : active, 'actives_id': actives_id}         
+        datos = {'activos' : active, 'actives_id': actives_id}         
         return render(request, "crud_actives/update_actives.html",datos)
 
 
@@ -128,19 +207,19 @@ def delete_actives  (request, idactive):
         if request.method == 'POST':
             if request.POST.get('id'):
                 id_a_borrar = request.POST.get('id')
-                tupla=store.objects.get(id = id_a_borrar)
+                tupla=active.objects.get(id = id_a_borrar)
                 tupla.delete()
                 return redirect('list_actives')
         else:
-            active = store.objects.all()
-            actives_id = store.objects.get(id = idactive)
-            datos = {'stores' : active, 'actives_id': actives_id}
+            active = active.objects.all()
+            actives_id = active.objects.get(id = idactive)
+            datos = {'activos' : active, 'actives_id': actives_id}
             return render(request, "crud_actives/delete_actives.html",datos)
         
-    except store.DoesNotExist:
-        active = store.objects.all()
+    except active.DoesNotExist:
+        active = active.objects.all()
         actives_id = None
-        datos = {'stores' : active, 'actives_id': actives_id} 
+        datos = {'activos' : active, 'actives_id': actives_id} 
         return render(request, "crud_actives/delete_actives.html",datos)
     
 
@@ -164,7 +243,8 @@ def list_user(request):
                 Q(sub_area_de_trabajo__icontains=palabra) |
                 Q(codigo_de_personal__icontains=palabra) |
                 Q(apellidos_y_nombres_adryan__icontains=palabra) |
-                Q(tipo_de_jornada_adryan__icontains=palabra)   
+                Q(tipo_de_jornada_adryan__icontains=palabra)   |
+                Q(correo_corporativo_adryan__icontains=palabra) 
 
 
             )
@@ -260,7 +340,7 @@ def delete_user (request, iduser):
 
 def generar_acta_entrega(request, iduser):
     usuario = get_object_or_404(Users, pk=iduser)
-    activos = store.objects.all()
+    activos = activo.objects.all()
 
     contador_obj, created = Contador.objects.get_or_create(id=1)
     contador = contador_obj.valor
@@ -269,7 +349,7 @@ def generar_acta_entrega(request, iduser):
 
     if request.method == 'POST' and 'generar_acta' in request.POST:
         activos_seleccionados = request.POST.getlist('activo')
-        activos_entregados = store.objects.filter(pk__in=activos_seleccionados)
+        activos_entregados = activo.objects.filter(pk__in=activos_seleccionados)
 
         # Incrementar el contador
         contador_obj.valor += 1
@@ -278,7 +358,7 @@ def generar_acta_entrega(request, iduser):
 
         # Convertir campos a mayúsculas antes de guardar
         for activo_entregado in activos_entregados:
-            for field in ['description', 'marc_model', 'serie', 'estade', 'observations']:
+            for field in ['categoria', 'marca', 'codigo_inventario', 'serie', 'estado']:
                 setattr(activo_entregado, field, getattr(activo_entregado, field).upper())
             activo_entregado.save()
 
@@ -288,10 +368,9 @@ def generar_acta_entrega(request, iduser):
     
 
         context = {
-            'name': usuario.name,
-            'lastname': usuario.lastname,
-            'post': usuario.post,
-            'area': usuario.area,
+            'apellidos_y_nombres_adryan': usuario.apellidos_y_nombres_adryan.upper(),
+            'nomenclatura_de_puesto': usuario.nomenclatura_de_puesto.upper(),
+            'area_de_trabajo': usuario.area_de_trabajo.upper(),
             'contador':contador
     
         }
@@ -312,7 +391,7 @@ def generar_acta_entrega(request, iduser):
         headings = table.rows[0].cells
         headings[0].text = 'CANTIDAD'
         headings[1].text = 'DESCRIPCION'
-        headings[2].text = 'MODELO'
+        headings[2].text = 'MARCA'
         headings[3].text = 'CODIGO PATRIMONIO'
         headings[4].text = 'SERIE'
         headings[5].text = 'OBSERVACIONES'
@@ -321,24 +400,15 @@ def generar_acta_entrega(request, iduser):
         for cell in headings:
             cell.paragraphs[0].runs[0].font.color.rgb = RGBColor(255, 255, 255)  # Color blanco
             cell._element.get_or_add_tcPr().append(parse_xml(r'<w:shd {} w:fill="000000"/>'.format(nsdecls('w'))))  # Color de fondo en negro
-
+        # parse_xml
         for cell in headings:
             cell.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER  # Alinear al centro
             
-        #Agregar filas con datos de activos
-        # for activo_entregado in activos_entregados:
-        #     row_cells = table.add_row().cepara la ciudadlls
-        #     row_cells[0].text = "1"  # Aquí asignas "1" a la primera celda de cada fila
-        #     row_cells[1].text = activo_entregado.description
-        #     row_cells[2].text = activo_entregado.marc_model
-        #     row_cells[3].text = activo_entregado.serie
-        #     row_cells[4].text = activo_entregado.estade
-        #     row_cells[5].text = activo_entregado.observations
 
         for activo_entregado in activos_entregados:
             row_cells = table.add_row().cells
             for i in range(6):
-                row_cells[i].text = "1" if i == 0 else getattr(activo_entregado, ['description', 'marc_model', 'serie', 'estade', 'observations'][i-1])
+                row_cells[i].text = "1" if i == 0 else getattr(activo_entregado, ['categoria', 'marca', 'codigo_inventario', 'serie', 'estado'][i-1])
                 for paragraph in row_cells[i].paragraphs:
                     paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
@@ -354,7 +424,7 @@ def generar_acta_entrega(request, iduser):
         locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
         # Obtener y formatear la fecha actual
         fecha_actual = datetime.now()
-        fecha_formateada = fecha_actual.strftime('Huancayo,' + '%A, %d de %B de %Y')
+        fecha_formateada = fecha_actual.strftime('Huancayo, ' + '%A, %d de %B de %Y')
 
         # Concatenar textoya queda 
         texto_concatenado = fecha_formateada
@@ -394,40 +464,6 @@ def generar_acta_entrega(request, iduser):
 
 
 
-# def import_usuarios(request):
-#     if request.method == 'POST':
-#         excel_file = request.FILES.get('excel_usuarios')
-
-#         if excel_file and excel_file.name.endswith('.xlsx'):
-#             # Leer el archivo Excel
-#             df = pd.read_excel(excel_file)
-
-#             if 'full_name' in df.columns and 'corporate_email' in df.columns and 'gender' in df.columns and 'hire_date' in df.columns and 'generation' in df.columns and 'immediate_hierarchical_boss' in df.columns:
-#                 # Iterar a través de las filas del DataFrame y crear nuevos usuarios
-#                 for index, row in df.iterrows():
-#                     user = Users(
-#                         name=row['NAME'],
-#                         lastname=row['LASTNAME'],
-#                         gmail=row['GMAIL'],
-#                         area=row['AREA'],
-#                         post=row['POST']
-#                     )                          
-#                     user.save()
-
-          
-#             return redirect('list_user')
-
-
-#     return render(request, 'reports/Importar/usuarios.html')  
-
-    # name = models.CharField(max_length=30,null=False)
-    # lastname = models.CharField(max_length=30, null=False)
-    # gmail = models.CharField(max_length=50, default=None)
-    # area = models.CharField(max_length=60,null=False)
-    # post = models.CharField(max_length=60,null=True)
-    # fecha_registro = models.DateTimeField(auto_now_add=True)
-
-
 
 def import_usuarios(request):
     if request.method == 'POST':
@@ -436,13 +472,9 @@ def import_usuarios(request):
         if excel_file and excel_file.name.endswith('.xlsx'):
             # Leer el archivo Excel
             df = pd.read_excel(excel_file)
-            
-            # if all(col in df.columns for col in ['Planilla', 'Unidad de negocio','Área de trabajo','Sub Área de trabajo',
-            #                                      'Ubicación Física', 'Local','Naturaleza de puesto','Nomenclatura de puesto',
-            #                                      'Tipo de puesto','Motivo de alta','Código de personal']):
-                
+                 
             if all(col in df.columns for col in ['Planilla', 'Unidad de negocio','Área de trabajo','Sub Área de trabajo',
-                                                 'Ubicación Física','Local','Naturaleza de puesto','Nomenclatura de puesto',
+                                                 'Ubicación Física','Local ','Naturaleza de puesto','Nomenclatura de puesto',
                                                  'Tipo de puesto','Motivo de alta','Código de personal','Apellidos y nombres (ADRYAN)',
                                                  'Género (ADRYAN)','Fecha de ingreso','Tipo de contrato (ADRYAN)','Tipo de jornada (ADRYAN)',
                                                  'Nacionalidad (ADRYAN)','Tiempo de servicio (años)','Tiempo de servicio (meses)',
@@ -462,7 +494,7 @@ def import_usuarios(request):
                         area_de_trabajo=row['Área de trabajo'],
                         sub_area_de_trabajo=row['Sub Área de trabajo'],
                         ubicacion_fisica=row['Ubicación Física'],
-                        local=row['Local'],
+                        local=row['Local '],
                         naturaleza_de_puesto=row['Naturaleza de puesto'],
                         nomenclatura_de_puesto=row['Nomenclatura de puesto'],
                         tipo_de_puesto=row['Tipo de puesto'],
@@ -499,20 +531,35 @@ def import_activos(request):
             # Leer el archivo Excel
             df = pd.read_excel(excel_file)
 
-            if 'DESCRIPTION' in df.columns and 'MARC_MODEL' in df.columns and 'SERIE' in df.columns and 'ESTADE' in df.columns and 'OBSERVATIONS' in df.columns:
-                # Iterar a través de las filas del DataFrame y crear nuevos activos
+            if all(col in df.columns for col in ['SEDE','PABELLÓN','TIPO DE AMBIENTE','AMBIENTE','DIRECCIÓN','DISTRITO','SERIE','CÓDIGO DE INVENTARIO',
+                                                 'CATEGORIA','MARCA','DESCRIPCIÓN','MODELO','HOSTNAME','ESTADO','RENTA','CONTRATO','ESTADO DE RENTA','PROVEEDOR',
+                                                 'DEVOLUCIÓN']):
+        
                 for index, row in df.iterrows():
-                    activo = store(
-                        description=row['DESCRIPTION'],
-                        #HOLAAAAAAAAAA
-                        #AVANCE DE 03/04/2023
-                        #PRUEBA DE GUARDADO DE ACTIVE_USER_VIEWDATA
-                        marc_model=row['MARC_MODEL'],
+                    active = activo( 
+                        sede=row['SEDE'],
+                        pabellon=row['PABELLÓN'],
+                        tipo_ambiente=row['TIPO DE AMBIENTE'],
+                        ambiente=row['AMBIENTE'],
+                        direccion=row['DIRECCIÓN'],
+                        distrito=row['DISTRITO'],
                         serie=row['SERIE'],
-                        estade=row['ESTADE'],
-                        observations=row['OBSERVATIONS']
+                        codigo_inventario=row['CÓDIGO DE INVENTARIO'],
+                        categoria=row['CATEGORIA'],
+                        marca=row['MARCA'],
+                        descripcion=row['DESCRIPCIÓN'],
+                        modelo=row['MODELO'],
+                        hostname=row['HOSTNAME'],
+                        estado=row['ESTADO'],
+                        renta=row['RENTA'],
+                        contrato=row['CONTRATO'],
+                        estado_renta=row['ESTADO DE RENTA'],
+                        proveedor=row['PROVEEDOR'],
+                        devolucion=row['DEVOLUCIÓN']
+
+
                     )
-                    activo.save()
+                    active.save()
 
             return redirect('list_actives')
 

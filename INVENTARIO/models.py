@@ -13,10 +13,7 @@ class Meta:
     verbose_name_plural = "works"
 
 def __str__(self):
-    return self.apellidos_y_nombres
-
-class prueba (models.Model):
-    hola = models.CharField(max_length=50, null=False),
+    return f"{self.apellidos_y_nombres}"
 
 
 # store
@@ -47,7 +44,7 @@ class activo(models.Model):
         db_table = 'activo'
 
     def __str__(self):
-        return self.apellidos_y_nombres_adryan
+        return f"{self.apellidos_y_nombres_adryan}"
 
 
 class Users(models.Model):

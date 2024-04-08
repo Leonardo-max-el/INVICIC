@@ -1,0 +1,121 @@
+{% extends "../index_master.html" %}
+
+{% block content %}
+
+<div class="right_col" role="main">
+  <div>	 
+    <h3>DATOS COMPLETOS DEL ACTIVES:</h3>
+
+    <div style="height: 20px;"></div> <!-- Separador -->
+    <form class="row g-3">
+      <fieldset disabled>
+
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Sede</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.sede }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Pabellón</label>
+          <input style="width: 80px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.pabellon }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Tipo Ambiente</label>
+          <input style="width: 150px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.tipo_ambiente }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Ambiente</label>
+          <input style="width: 450px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.ambiente }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Direción</label>
+          <input style="width: 280px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.direccion }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Distrito</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.distrito }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Serie</label>
+          <input style="width: 250px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.serie }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Codigo de Inventario</label>
+          <input style="width: 250px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.codigo_inventario }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Categoria</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.categoria }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Marca</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.marca }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Descripcion</label>
+          <input style="width: 500px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.descripcion }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Modelo</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.modelo }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Hostname</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.hostname }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Estado</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.estado }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Renta</label>
+          <input style="width: 150px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.renta }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Contrato</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.contrato }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Estado de Renta</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.estado_renta }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Proveedor</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.proveedor }}">
+        </div>
+
+        <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+          <label style="font-weight: bold;" for="disabledTextInput" class="form-label">Devolución</label>
+          <input style="width: 200px; height: 40px;" type="text" class="form-control" placeholder="{{ activo.devolucion }}">
+        </div>
+      </div>
+    </form>
+    <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left"> Volver</i> </button>
+    <button class="btn btn-warning" onclick="window.location.href='update_user/{{ user.id }}' "><i class="fa fa-refresh"></i> Actualizar</button>
+    {% comment %} <button name="acta" class="btn btn-primary" onclick="window.location.href='generar_acta_entrega/{{ user.id }}'"><i class="fa fa-file-text-o" aria-hidden="true"></i> Generar Acta</button> {% endcomment %}
+   </div>
+
+
+
+  </div>
+
+
+
+{% endblock%}

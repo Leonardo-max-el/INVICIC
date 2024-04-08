@@ -1,0 +1,17 @@
+ 
+
+<h1>Aqui va el logeo</h1>
+
+{{ error }}
+
+<form  method="POST">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button>
+        Registrarse 
+    </button>
+
+</form>
