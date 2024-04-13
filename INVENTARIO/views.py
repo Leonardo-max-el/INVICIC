@@ -1,12 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse, Http404
-from .models import activo, Users, ActaEntrega,Contador
+from .models import Activo, Users, ActaEntrega,Contador
 from django.db.models import Q
 from .models import Contador
 from .forms import ActaEntregaForm
 from django.core.mail import EmailMessage
 from io import BytesIO
 from datetime import datetime
+from django.utils import timezone
 
 from docx.shared import RGBColor
 from docx.oxml.ns import nsdecls
@@ -27,6 +28,8 @@ from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth.models import  User
 from django.contrib.auth import login,logout,authenticate
 from django.db import  IntegrityError
+
+from collections import defaultdict
 
 TEMPLATE_DIRS = (
     'os.path.join(BASE_DIR, "templates")'
@@ -107,10 +110,20 @@ def data_user(request,iduser):
         
     
     return render(request,"Documents/data_user.html",context)
+
+
+    context = {
+        'user': user,
+        'ultima_acta_generada': ultima_acta_generada,
+        'activos_agrupados': activos_agrupados,  # Se pasa a la plantilla
+    }
+ 
+    
+    return render(request,"Documents/data_user.html",context)
     
 def data_activo(request, idactivo):
     
-    activos = get_object_or_404(activo, pk=idactivo)
+    activos = get_object_or_404(Activo, pk=idactivo)
     
     context = {
         'activo':activos
@@ -126,7 +139,7 @@ def acta_entrega (request):
 def list_actives (request):
     if request.method=='POST':
         word = request.POST.get('keyword')
-        list = activo.objects.all()
+        list = Activo.objects.all()
 
         if word is not None:
             resultado_busqueda = list.filter(
@@ -145,7 +158,7 @@ def list_actives (request):
             return render(request, "crud_actives/list_actives.html",datos)
 
     else:
-        active = activo.objects.order_by('-id')[:10] 
+        active = Activo.objects.order_by('-id')[:10] 
         datos = {'activos' : active}
         return render(request, "crud_actives/list_actives.html",datos)
 
@@ -155,7 +168,7 @@ def add_actives (request):
     if request.method=='POST':
         if request.POST.get ('descripcion') and request.POST.get ('marc_model') and request.POST.get('serie') and request.POST.get('estado')  and request.POST.get('Observaciones'):
             
-            active = activo()
+            active = Activo()
             active.description = request.POST.get('descripcion')
             active.marc_model = request.POST.get('marc_model')
             active.serie = request.POST.get('serie')
@@ -340,7 +353,7 @@ def delete_user (request, iduser):
 
 def generar_acta_entrega(request, iduser):
     usuario = get_object_or_404(Users, pk=iduser)
-    activos = activo.objects.all()
+    activos = Activo.objects.all()
 
     contador_obj, created = Contador.objects.get_or_create(id=1)
     contador = contador_obj.valor
@@ -349,7 +362,13 @@ def generar_acta_entrega(request, iduser):
 
     if request.method == 'POST' and 'generar_acta' in request.POST:
         activos_seleccionados = request.POST.getlist('activo')
-        activos_entregados = activo.objects.filter(pk__in=activos_seleccionados)
+        activos_entregados = Activo.objects.filter(pk__in=activos_seleccionados)
+        
+        
+        for activo in activos_entregados:
+            activo.asignado_a = usuario
+            activo.fecha_asignacion = timezone.now()
+            activo.save()
 
         # Incrementar el contador
         contador_obj.valor += 1
@@ -536,7 +555,7 @@ def import_activos(request):
                                                  'DEVOLUCIÓN']):
         
                 for index, row in df.iterrows():
-                    active = activo( 
+                    active = Activo( 
                         sede=row['SEDE'],
                         pabellon=row['PABELLÓN'],
                         tipo_ambiente=row['TIPO DE AMBIENTE'],
