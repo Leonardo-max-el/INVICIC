@@ -16,7 +16,7 @@ def __str__(self):
     return f"{self.apellidos_y_nombres}"
 
 
-# store
+# activo
 class activo(models.Model):
     
     id = models.BigAutoField(primary_key=True)
@@ -44,10 +44,10 @@ class activo(models.Model):
         db_table = 'activo'
 
     def __str__(self):
-        return f"{self.apellidos_y_nombres_adryan}"
+        return f"{self.serie}"
 
 
-class Users(models.Model):
+class user(models.Model):
     id = models.AutoField(primary_key=True)
     
     planilla = models.CharField(max_length=10, default='')
@@ -76,21 +76,33 @@ class Users(models.Model):
     generacion_adryan = models.CharField(max_length=50, default='')
     jefe_inmediato_jerarquico = models.CharField(max_length=100, default='')
     reemplaza_a = models.CharField(max_length=100, default='')
-    activo = models.ForeignKey(activo, on_delete=models.CASCADE, null= True)
+    activo = models.ManyToManyField(activo, related_name='usuarios')
     
 
 
     class Meta:
-        db_table = 'users'
+        db_table = 'user'
 
     def __str__(self):
         return self.apellidos_y_nombres_adryan
 
-
-
-class ActaEntrega(models.Model):
+class AsignacionActivo(models.Model):
     id = models.AutoField(primary_key=True)
-    Users = models.ForeignKey(Users, on_delete=models.CASCADE)  # Establece la relación con la tabla de usuarios
+    usuario = models.ForeignKey(user, on_delete=models.CASCADE)
+    activo = models.ForeignKey(activo, on_delete=models.CASCADE)
+    fecha_asignacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Asignación de Activo'
+        verbose_name_plural = 'Asignaciones de Activos'
+        db_table = 'AsignacionActivo'
+
+    def __str__(self):
+        return f'{self.usuario.apellidos_y_nombres_adryan} - {self.activo.serie} - {self.fecha_asignacion}'
+
+class actaEntrega(models.Model):
+    id = models.AutoField(primary_key=True)
+    usuario = models.ForeignKey(user, on_delete=models.CASCADE)  # Establece la relación con la tabla de usuarios
     archivo_pdf = models.FileField(upload_to='actas_entrega_pdfs/')
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
@@ -119,7 +131,6 @@ class delivery_record(models.Model):
 
 class Contador(models.Model):
     valor = models.IntegerField(default=0)
-
 
 
 

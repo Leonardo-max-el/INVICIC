@@ -1,8 +1,8 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse, Http404
-from .models import Activo, Users, ActaEntrega,Contador
+from .models import activo, user,Contador, AsignacionActivo
 from django.db.models import Q
-from .models import Contador
+
 from .forms import ActaEntregaForm
 from django.core.mail import EmailMessage
 from io import BytesIO
@@ -30,6 +30,9 @@ from django.contrib.auth import login,logout,authenticate
 from django.db import  IntegrityError
 
 from collections import defaultdict
+from itertools import groupby
+from operator import attrgetter 
+from collections import defaultdict
 
 TEMPLATE_DIRS = (
     'os.path.join(BASE_DIR, "templates")'
@@ -53,10 +56,10 @@ def register (request):
         if request.POST['password1']== request.POST['password2']:
             #register user
            try: 
-                user = User.objects.create_user(
+                users = user.objects.create_user(
                 username=request.POST['username'],
                 password=request.POST['password1'])
-                user.save()
+                users.save()
                 login(request,user)
                 return  redirect('index') 
            except IntegrityError:  
@@ -102,28 +105,44 @@ def login(request):
 
 def data_user(request,iduser):
 
-    user = get_object_or_404(Users, pk=iduser)
+    usuario = get_object_or_404(user, pk=iduser)
+    asignaciones = AsignacionActivo.objects.filter(usuario=usuario).order_by('fecha_asignacion')
+    
+    #Agrupar las asignaciones por fecha.
+    asignaciones_agrupadas = {}
+    
+    for asignacion in asignaciones:
+        fecha= asignacion.fecha_asignacion.strftime("%d/%m/%y")
+        hora= asignacion.fecha_asignacion.strftime('%H:%M')
+    
+
+          # Verificar si el grupo ya existe en asignaciones_agrupadas
+        if (fecha, hora) in asignaciones_agrupadas:
+            # Si el grupo existe, agregar el activo a ese grupo
+            asignaciones_agrupadas[(fecha, hora)].append(asignacion.activo)
+        else:
+            # Si el grupo no existe, crear uno nuevo
+            asignaciones_agrupadas[(fecha, hora)] = [asignacion.activo]
+
     
     context={
-        'user':user
+        'user':usuario,
+        'asignaciones':asignaciones,
+        'asignaciones_agrupadas': asignaciones_agrupadas
     }
         
     
     return render(request,"Documents/data_user.html",context)
 
 
-    context = {
-        'user': user,
-        'ultima_acta_generada': ultima_acta_generada,
-        'activos_agrupados': activos_agrupados,  # Se pasa a la plantilla
-    }
- 
-    
-    return render(request,"Documents/data_user.html",context)
+
+
+
+
     
 def data_activo(request, idactivo):
     
-    activos = get_object_or_404(Activo, pk=idactivo)
+    activos = get_object_or_404(activo, pk=idactivo)
     
     context = {
         'activo':activos
@@ -139,7 +158,7 @@ def acta_entrega (request):
 def list_actives (request):
     if request.method=='POST':
         word = request.POST.get('keyword')
-        list = Activo.objects.all()
+        list = activo.objects.all()
 
         if word is not None:
             resultado_busqueda = list.filter(
@@ -158,7 +177,7 @@ def list_actives (request):
             return render(request, "crud_actives/list_actives.html",datos)
 
     else:
-        active = Activo.objects.order_by('-id')[:10] 
+        active = activo.objects.order_by('-id')[:10] 
         datos = {'activos' : active}
         return render(request, "crud_actives/list_actives.html",datos)
 
@@ -168,7 +187,7 @@ def add_actives (request):
     if request.method=='POST':
         if request.POST.get ('descripcion') and request.POST.get ('marc_model') and request.POST.get('serie') and request.POST.get('estado')  and request.POST.get('Observaciones'):
             
-            active = Activo()
+            active = activo()
             active.description = request.POST.get('descripcion')
             active.marc_model = request.POST.get('marc_model')
             active.serie = request.POST.get('serie')
@@ -247,7 +266,7 @@ def delete_actives  (request, idactive):
 def list_user(request):
     if request.method == 'POST':
         palabra = request.POST.get('keyword')
-        lista = Users.objects.all()
+        lista = user.objects.all()
 
         if palabra is not None:
             resultado_busqueda = lista.filter(
@@ -269,7 +288,7 @@ def list_user(request):
             return render(request, "crud_users/list_user.html", datos)
 
     else:
-        usuarios = Users.objects.order_by('id')[:10]
+        usuarios = user.objects.order_by('id')[:10]
         datos = {'usuarios': usuarios}
         return render(request, "crud_users/list_user.html", datos)
 
@@ -278,7 +297,7 @@ def list_user(request):
 def add_user (request):
     if request.method=='POST':
         if request.POST.get ('nombre') and request.POST.get ('apellidos') and request.POST.get('gmail') and request.POST.get('area')  and request.POST.get('cargo'):
-            user = Users()
+            user = user()
             user.name = request.POST.get('nombre')
             user.lastname = request.POST.get('apellidos')
             user.gmail = request.POST.get('gmail')
@@ -298,10 +317,10 @@ def update_user (request, iduser):
             if request.POST.get('id') and request.POST.get ('nombre') and request.POST.get ('apellidos') and request.POST.get('gmail') and request.POST.get('area')  and request.POST.get('cargo'):
                 
                 user_id_old = request.POST.get('id')
-                user_old = Users()
-                user_old = Users.objects.get(id = user_id_old )
+                user_old = user()
+                user_old = user.objects.get(id = user_id_old )
                 
-                user = Users()
+                user = user()
                 user.id = request.POST.get('id')
                 user.name = request.POST.get('nombre')
                 user.lastname = request.POST.get('apellidos')
@@ -313,13 +332,13 @@ def update_user (request, iduser):
                 return redirect('list_user')
 
         else:
-            users = Users.objects.all()
-            user = Users.objects.get(id=iduser)
+            users = user.objects.all()
+            user = user.objects.get(id=iduser)
             datos = { 'usuarios': users, 'usuario':user }
             return render(request, "crud_users/update_user.html",datos)
 
-    except Users.DoesNotExist:
-            users = Users.objects.all()
+    except user.DoesNotExist:
+            users = user.objects.all()
             user = None
             datos = { 'usuarios': users, 'usuario':user }
             return render(request, "crud_users/update_user.html",datos) 
@@ -331,44 +350,47 @@ def delete_user (request, iduser):
         if request.method=='POST':
             if request.POST.get('id'):
                 user_a_borrar = request.POST.get('id')
-                tupla = Users.objects.get(id = user_a_borrar)
+                tupla = user.objects.get(id = user_a_borrar)
                 tupla.delete()
                 return redirect('list_user')
 
         else:
-            users = Users.objects.all()
-            user = Users.objects.get(id = iduser)
+            users = user.objects.all()
+            user = user.objects.get(id = iduser)
             datos = { 'usuarios': users, 'usuario':user }
             return render(request, "crud_users/delete_user.html",datos)
         
-    except Users.DoesNotExist:
-        users = Users.objects.all()
+    except user.DoesNotExist:
+        users = user.objects.all()
         user = None
         datos = { 'usuarios': users, 'usuario':user }
         return render(request, "crud_users/delete_user.html",datos)
 
 ###############REPORTES DE USUARIOS###################
 
-
-
 def generar_acta_entrega(request, iduser):
-    usuario = get_object_or_404(Users, pk=iduser)
-    activos = Activo.objects.all()
+    usuario = get_object_or_404(user, pk=iduser)
+    activos = activo.objects.all()
 
     contador_obj, created = Contador.objects.get_or_create(id=1)
     contador = contador_obj.valor
 
-    
-
     if request.method == 'POST' and 'generar_acta' in request.POST:
         activos_seleccionados = request.POST.getlist('activo')
-        activos_entregados = Activo.objects.filter(pk__in=activos_seleccionados)
+        activos_entregados = activo.objects.filter(pk__in=activos_seleccionados)
+
+        asignaciones = AsignacionActivo.objects.filter(usuario=usuario)
+        
+        # Asociar los activos seleccionados al usuario
+        asignaciones_agrupadas = []
+        for fecha, asignaciones_fecha in groupby(asignaciones, key=attrgetter('fecha_asignacion.date')):
+            asignaciones_agrupadas.append((fecha, list(asignaciones_fecha)))
         
         
-        for activo in activos_entregados:
-            activo.asignado_a = usuario
-            activo.fecha_asignacion = timezone.now()
-            activo.save()
+        for activo_entregado in activos_entregados:
+            asignacion = AsignacionActivo(usuario=usuario, activo=activo_entregado)
+            usuario.activo.add(activo_entregado)
+            asignacion.save()
 
         # Incrementar el contador
         contador_obj.valor += 1
@@ -377,7 +399,7 @@ def generar_acta_entrega(request, iduser):
 
         # Convertir campos a mayúsculas antes de guardar
         for activo_entregado in activos_entregados:
-            for field in ['categoria', 'marca', 'codigo_inventario', 'serie', 'estado']:
+            for field in ['descripcion', 'marca', 'serie', 'estado', 'estado']:
                 setattr(activo_entregado, field, getattr(activo_entregado, field).upper())
             activo_entregado.save()
 
@@ -385,13 +407,14 @@ def generar_acta_entrega(request, iduser):
         template_path = './INVENTARIO/templates/Documents/docxtemplate.docx'
         doc = DocxTemplate(template_path)
     
-
+      
         context = {
+
             'apellidos_y_nombres_adryan': usuario.apellidos_y_nombres_adryan.upper(),
             'nomenclatura_de_puesto': usuario.nomenclatura_de_puesto.upper(),
             'area_de_trabajo': usuario.area_de_trabajo.upper(),
-            'contador':contador
-    
+            'contador':contador,
+            'asignaciones_agrupadas':asignaciones_agrupadas
         }
 
         # Renderizar la plantilla con los datos
@@ -410,7 +433,7 @@ def generar_acta_entrega(request, iduser):
         headings = table.rows[0].cells
         headings[0].text = 'CANTIDAD'
         headings[1].text = 'DESCRIPCION'
-        headings[2].text = 'MARCA'
+        headings[2].text = 'MODELO'
         headings[3].text = 'CODIGO PATRIMONIO'
         headings[4].text = 'SERIE'
         headings[5].text = 'OBSERVACIONES'
@@ -419,7 +442,7 @@ def generar_acta_entrega(request, iduser):
         for cell in headings:
             cell.paragraphs[0].runs[0].font.color.rgb = RGBColor(255, 255, 255)  # Color blanco
             cell._element.get_or_add_tcPr().append(parse_xml(r'<w:shd {} w:fill="000000"/>'.format(nsdecls('w'))))  # Color de fondo en negro
-        # parse_xml
+
         for cell in headings:
             cell.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER  # Alinear al centro
             
@@ -427,7 +450,7 @@ def generar_acta_entrega(request, iduser):
         for activo_entregado in activos_entregados:
             row_cells = table.add_row().cells
             for i in range(6):
-                row_cells[i].text = "1" if i == 0 else getattr(activo_entregado, ['categoria', 'marca', 'codigo_inventario', 'serie', 'estado'][i-1])
+                row_cells[i].text = "1" if i == 0 else getattr(activo_entregado, ['descripcion', 'marca', 'serie', 'estado', 'estado'][i-1])
                 for paragraph in row_cells[i].paragraphs:
                     paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
@@ -443,7 +466,7 @@ def generar_acta_entrega(request, iduser):
         locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
         # Obtener y formatear la fecha actual
         fecha_actual = datetime.now()
-        fecha_formateada = fecha_actual.strftime('Huancayo, ' + '%A, %d de %B de %Y')
+        fecha_formateada = fecha_actual.strftime('Huancayo,' + '%A, %d de %B de %Y')
 
         # Concatenar textoya queda 
         texto_concatenado = fecha_formateada
@@ -468,6 +491,9 @@ def generar_acta_entrega(request, iduser):
     else:
         context = {'user': usuario, 'activos': activos, 'contador': contador}
         return render(request, 'Documents/acta_entrega.html', context)
+
+
+
 
 
 
@@ -507,7 +533,7 @@ def import_usuarios(request):
                 df['Fecha de nacimiento (ADRYAN)'] = pd.to_datetime(df['Fecha de nacimiento (ADRYAN)'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')
 
                 for index, row in df.iterrows():
-                    usuario = Users(
+                    usuario = user(
                         planilla=row['Planilla'],
                         unidad_de_negocio= row['Unidad de negocio'],
                         area_de_trabajo=row['Área de trabajo'],
@@ -555,7 +581,7 @@ def import_activos(request):
                                                  'DEVOLUCIÓN']):
         
                 for index, row in df.iterrows():
-                    active = Activo( 
+                    active = activo( 
                         sede=row['SEDE'],
                         pabellon=row['PABELLÓN'],
                         tipo_ambiente=row['TIPO DE AMBIENTE'],
@@ -592,8 +618,8 @@ def export(request):
 
 
 def info_acta(request, iduser):
-    user = Users.objects.get(pk=iduser)
-    actas_entrega = ActaEntrega.objects.filter(Users=user)
+    user = user.objects.get(pk=iduser)
+    actas_entrega = acta_entrega.objects.filter(Users=user)
 
     if request.method == 'POST':
         form = ActaEntregaForm(request.POST, request.FILES)
@@ -612,10 +638,10 @@ def info_acta(request, iduser):
 def delete_ActaEntrega(request, idacta):
     if request.method == 'POST':
         try:
-            actas_entrega = ActaEntrega.objects.get(pk=idacta)
+            actas_entrega = acta_entrega.objects.get(pk=idacta)
             # Elimina el documento de la base de datos y del sistema de archivos
             actas_entrega.delete()
-        except ActaEntrega.DoesNotExist:
+        except acta_entrega.DoesNotExist:
             # Maneja el caso en el que el documento no existe
             raise Http404("El acta de entrega no existe.")
     return redirect('info_acta', iduser=actas_entrega.Users.id)
