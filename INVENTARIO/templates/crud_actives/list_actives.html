@@ -1,6 +1,11 @@
 {% extends '../index_master.html'%}
 
 {% block content %}
+
+
+
+
+
 <div class="right_col" role="main">
 <h1>Lista de Activos</h1>
 
@@ -25,6 +30,7 @@
         <th scope="col">Descripcion</th>
         <th scope="col">Ambiente</th>
         <th scope="col">Dirección</th>
+        <th scope="col">Declaracion</th>
    
 
 
@@ -41,6 +47,7 @@
         <td>{{ u.descripcion }}</td>
         <td>{{ u.ambiente }}</td>
         <td>{{ u.direccion }}</td>
+        <td class="{% if u.declaracion == 'ASIGNADO' %}declaracion-asignado{% elif u.declaracion == 'ACTIVO' %}declaracion-activo{% else %}declaracion-default{% endif %}">{{ u.declaracion }}</td>
 
         <td>
           <button class="btn btn-warning" onclick="window.location.href='update_actives/{{ u.id }}' "><i class="fa fa-refresh"></i> </button>

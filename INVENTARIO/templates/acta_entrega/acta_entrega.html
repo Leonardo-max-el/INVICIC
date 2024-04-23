@@ -22,7 +22,7 @@
     <thead>
       <tr>
         <th scope="col">#</th>
-        <th scope="col">Descripcion</th>
+        <th scope="col">Categoria</th>
         <th scope="col">Marca/modelo</th>
         <th scope="col">Serie</th>
         <th scope="col">Estado</th>
@@ -35,9 +35,9 @@
     {% for u in activos %}
       <tr style="text-transform: uppercase;">
         <th scope="row">{{ u.id  }}</th>
+        <td>{{ u.categoria}}</td>
         <td>{{ u.descripcion }}</td>
         <td>{{ u.modelo }}</td>
-        <td>{{ u.serie}}</td>
         <td>{{ u.estado }}</td>
 
         <td><input type="checkbox" name="activo" value="{{ u.id }}"></td>
@@ -48,7 +48,7 @@
     </tbody>
 
   </table>
-  <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left""> Volver</i> </button>
+  <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left"> Volver</i> </button>
   <button type="submit" class="btn btn-primary"  class="fa fa-file" name="generar_acta"><i class="fa fa-file"></i> Generar word</button>
 
 </form>

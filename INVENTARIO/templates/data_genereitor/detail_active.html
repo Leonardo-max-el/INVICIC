@@ -1,0 +1,138 @@
+{% extends "../index_master.html" %}
+{% block content %}
+<style>
+
+  <style>
+    .activo {
+      cursor: pointer;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f5f5f5;
+      transition: background-color 0.3s ease;
+    }
+    .activo.seleccionado {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .detalles {
+      display: none;
+      margin-top: 10px;
+    }
+    .activos-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .activos-table th,
+    .activos-table td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+    .activos-table th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+    .activos-table .btn-group {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+  
+</style>
+
+<div class="right_col" role="main">
+  <h4>Activos Entregados:</h4>
+
+  <table class="activos-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>ID</th>
+        <th>Categoria</th>
+        <th>Serie</th>
+        <th>Marca</th>
+        <th>Ambiente</th>
+        <th>C-Inventario</th>
+        <th>Modelo</th>
+        <th>Fecha devolucion</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for fecha, asignaciones in asignaciones_agrupadas.items %}
+
+      {% csrf_token %}
+      <tr>
+        <td rowspan="{{ asignaciones|length }}">{{ fecha.0 }} {{ fecha.1 }}</td>
+        {% for asignacion in asignaciones %}
+        
+        <td>{{ asignacion.id }}</td>
+        <td>{{ asignacion.categoria }}</td>
+        <td>{{ asignacion.descripcion }}</td>
+        <td>{{ asignacion.marca }}</td>
+        <td>{{ asignacion.ambiente }}</td>
+        <td>{{ asignacion.codigo_inventario }}</td>
+        <td>{{ asignacion.modelo }}</td>
+
+        <td> {{   asignaciones|length }}{{ fecha.0 }} {{ fecha.1 }}      </td>
+      
+        <td>
+            <div class="btn-group">
+
+              {% comment %} <button type="button" class="btn btn-primary btn-sm devolver-activo" data-activo-id="{{ asignacion.id }}">Devolver</button> {% endcomment %}
+              <button type="button" class="btn btn-primary btn-sm devolver-activo" data-activo-id="{{ asignacion.id }}">Devolver</button>
+
+              <button type="button" class="btn btn-danger btn-sm">Baja</button>
+            </div>
+        </td>
+    </tr>
+
+    {% endfor %}
+    {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+
+<script>
+const csrftoken = getCookie('csrftoken');
+
+function getCookie(name) {
+    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return cookieValue ? cookieValue.pop() : '';
+}
+
+document.querySelectorAll('.devolver-activo').forEach(function(button) {
+    button.addEventListener('click', function() {
+        const activoId = this.getAttribute('data-activo-id');
+
+        fetch(`/devolver_activo/${activoId}/`, {
+            method: 'POST',  // Método de la solicitud
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({  // Cuerpo de la solicitud (opcional)
+                activo_id: activoId,
+            }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error al devolver el activo. Código de estado: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Muestra una alerta cuando la fecha de devolución se registre correctamente
+            alert('Fecha de devolución registrada: ' + data.fecha_devolucion + ' ' +  data.hora_devolucion );
+            console.log('Fecha de devolución registrada:', data.fecha_devolucion);
+        })
+        .catch(error => {
+            console.error('Error al devolver el activo:', error);
+        });
+    });
+});
+</script>
+
+{% endblock %}

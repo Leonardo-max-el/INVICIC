@@ -121,100 +121,10 @@
     </form>
 
 
-
-    <style>
-        .activo {
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid transparent;
-            border-radius: 5px;
-            background-color: transparent;
-            transition: background-color 0.3s ease;
-        }
-
-        .activo.seleccionado {
-            background-color: green;
-            color: white;
-        }
-
-        .detalles {
-            display: none;
-            margin-top: 10px;
-        }
-        .space {
-          height: 20px; /* Ajusta la altura según tu preferencia */
-      }
-      
-    </style>
-
-<body>
-  <div class="container">
-    <h4>Activos Entregados:</h4>
-      {% for fecha_hora, activos in asignaciones_agrupadas.items %}
-          <h6  style="font-weight: bold;">Fecha: {{ fecha_hora.0 }} - {{ fecha_hora.1 }}</h6>
-          {% if activos %}
-              <div class="row">
-                  {% for activo in activos %}
-                      <div class="col-md-2">
-                          <div class="activo" data-detalles="{{ activo.descripcion }} {{ activo.marca }}">
-                              {{ activo.categoria }}
-                          </div>
-                          <div class="detalles" style="display: none;">
-                              <ul>
-                                  <li><strong>Descripción:</strong> {{ activo.descripcion }}</li>
-                                  <li><strong>Marca:</strong> {{ activo.marca }}</li>
-                                  <li><strong>Ambiente:</strong> {{ activo.ambiente }}</li>
-                                  <li><strong>C-Inventario:</strong> {{ activo.codigo_inventario }}</li>
-                                  <li><strong>Descripcion:</strong> {{ activo.descripcion }}</li>
-                                  <li><strong>Modelo:</strong> {{ activo.modelo }}</li>
-                              </ul>
-                          </div>
-                      </div>
-                  {% endfor %}
-              </div>
-          {% else %}
-              <p>Usuario sin activos para esta fecha y hora.</p>
-          {% endif %}
-      {% endfor %}
-  </div>
- 
-    <script>
-        document.querySelectorAll('.activo').forEach(function(activo) {
-            activo.addEventListener('click', function() {
-                document.querySelectorAll('.activo').forEach(function(activo) {
-                    activo.classList.remove('seleccionado');
-                });
-
-                this.classList.add('seleccionado');
-
-                var detalles = this.nextElementSibling;
-                if (detalles.style.display === 'none') {
-                    detalles.style.display = 'block';
-                } else {
-                    detalles.style.display = 'none';
-                }
-            });
-        });
-    </script>
-</body>
-
-
-<script>
-    function mostrarDetalles(id) {
-        var detalles = document.getElementById(id + "-detalles");
-        if (detalles.style.display === "none") {
-            detalles.style.display = "block";
-        } else {
-            detalles.style.display = "none";
-        }
-    }
-</script>
-
-
 <div class="space"></div>
 <div>
     <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left"> Volver</i> </button>
-    <button class="btn btn-warning" onclick="window.location.href='update_user/{{ user.id }}' "><i class="fa fa-refresh"></i> Actualizar</button>
+    <button class="btn btn-success" onclick=""><a href="{% url 'detail_active' iduser=user.id %}">Ver activos asignados</a></i></button>
     <button name="acta" class="btn btn-primary" onclick="window.location.href='generar_acta_entrega/{{ user.id }}'"><i class="fa fa-file-text-o" aria-hidden="true"></i> Generar Acta</button>
    </div>
   </div>

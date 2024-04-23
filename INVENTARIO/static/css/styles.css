@@ -10,3 +10,14 @@
 .activo.seleccionado {
     background-color: #e0e0e0;
 }
+
+.declaracion-asignado {
+    color: green;
+}
+
+.declaracion-activo {
+    color: blue;
+}
+
+.declaracion-default {
+    color: #333;
