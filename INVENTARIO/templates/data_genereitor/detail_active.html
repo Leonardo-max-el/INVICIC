@@ -64,7 +64,7 @@
       {% csrf_token %}
       <tr>
         <td rowspan="{{ asignaciones|length }}">{{ fecha.0 }} {{ fecha.1 }}</td>
-        {% for asignacion in asignaciones %}
+        {% for asignacion, fecha_devolucion in asignaciones %}
         
         <td>{{ asignacion.id }}</td>
         <td>{{ asignacion.categoria }}</td>
@@ -73,10 +73,9 @@
         <td>{{ asignacion.ambiente }}</td>
         <td>{{ asignacion.codigo_inventario }}</td>
         <td>{{ asignacion.modelo }}</td>
-
-        <td> {{   asignaciones|length }}{{ fecha.0 }} {{ fecha.1 }}      </td>
-      
+        <td>{{ fecha_devolucion }}</td>
         <td>
+          
             <div class="btn-group">
 
               {% comment %} <button type="button" class="btn btn-primary btn-sm devolver-activo" data-activo-id="{{ asignacion.id }}">Devolver</button> {% endcomment %}
@@ -127,7 +126,9 @@ document.querySelectorAll('.devolver-activo').forEach(function(button) {
             // Muestra una alerta cuando la fecha de devolución se registre correctamente
             alert('Fecha de devolución registrada: ' + data.fecha_devolucion + ' ' +  data.hora_devolucion );
             console.log('Fecha de devolución registrada:', data.fecha_devolucion);
-        })
+
+             
+          })
         .catch(error => {
             console.error('Error al devolver el activo:', error);
         });

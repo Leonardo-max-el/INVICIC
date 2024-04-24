@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from .models import activo, user,Contador, AsignacionActivo
 from django.db.models import Q
 
@@ -143,32 +143,32 @@ def detail_active(request, iduser):
     # Agrupar las asignaciones por fecha.
     asignaciones_agrupadas = {}
 
+
     
     for asignacion in asignaciones:
         fecha = asignacion.fecha_asignacion.strftime("%d/%m/%y")
         hora = asignacion.fecha_asignacion.strftime('%H:%M')
+        fecha_devolucion = asignacion.fecha_devolucion.strftime("%d/%m/%Y %H:%M") if asignacion.fecha_devolucion else "-"
 
-
-        # Verificar si el grupo ya existe en asignaciones_agrupadas
-        if (fecha, hora) in asignaciones_agrupadas:
-            # Si el grupo existe, agregar el activo a ese grupo
-            asignaciones_agrupadas[(fecha, hora)].append(asignacion.activo)
-         
+        clave = (fecha, hora)
+        asignacion_datos = (asignacion.activo, fecha_devolucion)
+        if clave in asignaciones_agrupadas:
+            asignaciones_agrupadas[clave].append((asignacion_datos))
         else:
-            # Si el grupo no existe, crear uno nuevo
-            asignaciones_agrupadas[(fecha, hora)] = [asignacion.activo]
+            asignaciones_agrupadas[clave] = [(asignacion_datos)]
             
-  
+    print(asignaciones_agrupadas) 
 
     context = {
         'user': usuario,
-        'asignaciones': asignaciones,
         'asignaciones_agrupadas': asignaciones_agrupadas
-       
+    
     
     }
         
     return render(request, "data_genereitor/detail_active.html", context)
+
+
 
 
 
@@ -177,31 +177,18 @@ def devolver_activo(request, activo_id):
         asignacion = get_object_or_404(AsignacionActivo, pk=activo_id)
         asignacion.fecha_devolucion = timezone.now()
         asignacion.save()
-        return JsonResponse({
-            'fecha_devolucion': asignacion.fecha_devolucion.strftime('%d/%m/%Y'),
-            'hora_devolucion':asignacion.fecha_devolucion.strftime('%H:%M')
-            })
+        
+               # Formatear la fecha y hora para enviarlas en la respuesta JSON
+        fecha_devolucion = asignacion.fecha_devolucion.strftime("%d/%m/%Y")
+        hora_devolucion = asignacion.fecha_devolucion.strftime("%H:%M")
+        
+        return JsonResponse({'fecha_devolucion': fecha_devolucion, 'hora_devolucion': hora_devolucion})
                 
     else:
+        # return redirect('detail_active', iduser=asignacion.id, fecha_devolucion=asignacion.fecha_devolucion)
         return JsonResponse({'error': 'Método no permitido'}, status=405)
 
-# def devolver_activo(request, activo_id):
-#     # Obtener la instancia de la asignación de activo
-#     asignacion = get_object_or_404(AsignacionActivo, pk=activo_id)
-    
-#     # Verificar si la asignación ya ha sido devuelta
-#     if asignacion.fecha_devolucion:
-#         # Si la asignación ya tiene una fecha de devolución, devolver un error
-#         return JsonResponse({'error': 'La asignación ya ha sido devuelta'}, status=400)
-    
-#     # Registrar la fecha de devolución actual
-#     asignacion.fecha_devolucion = timezone.now()
-    
-#     # Guardar los cambios en la base de datos
-#     asignacion.save()
-    
-#     # Devolver una respuesta de éxito
-#     return JsonResponse({'success': True})
+
 
 
 
