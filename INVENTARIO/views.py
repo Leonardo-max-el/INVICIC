@@ -2,13 +2,13 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from .models import activo, user,Contador, AsignacionActivo
 from django.db.models import Q
-
+from django.core.serializers import serialize
 from .forms import ActaEntregaForm
 from django.core.mail import EmailMessage
 from io import BytesIO
 from datetime import datetime
 from django.utils import timezone
-
+import json  # Agregar esta línea
 from docx.shared import RGBColor
 from docx.oxml.ns import nsdecls
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
@@ -138,32 +138,26 @@ def data_activo(request, idactivo):
 def detail_active(request, iduser):
 
     usuario = get_object_or_404(user, pk=iduser)
+
     asignaciones = AsignacionActivo.objects.filter(usuario=usuario).order_by('fecha_asignacion')
     
     # Agrupar las asignaciones por fecha.
     asignaciones_agrupadas = {}
-
-
-    
     for asignacion in asignaciones:
         fecha = asignacion.fecha_asignacion.strftime("%d/%m/%y")
         hora = asignacion.fecha_asignacion.strftime('%H:%M')
         fecha_devolucion = asignacion.fecha_devolucion.strftime("%d/%m/%Y %H:%M") if asignacion.fecha_devolucion else "-"
-
         clave = (fecha, hora)
-        asignacion_datos = (asignacion.activo, fecha_devolucion)
+        asignacion_datos = {'id': asignacion.id, 'activo': asignacion.activo, 'fecha_devolucion': fecha_devolucion}
         if clave in asignaciones_agrupadas:
-            asignaciones_agrupadas[clave].append((asignacion_datos))
+            asignaciones_agrupadas[clave].append(asignacion_datos)
         else:
-            asignaciones_agrupadas[clave] = [(asignacion_datos)]
-            
-    print(asignaciones_agrupadas) 
+            asignaciones_agrupadas[clave] = [asignacion_datos]
 
+    # Construir el contexto para pasar a la plantilla.
     context = {
         'user': usuario,
         'asignaciones_agrupadas': asignaciones_agrupadas
-    
-    
     }
         
     return render(request, "data_genereitor/detail_active.html", context)
@@ -172,22 +166,53 @@ def detail_active(request, iduser):
 
 
 
-def devolver_activo(request, activo_id):
+
+
+def devolver_activo(request, asignacion_id):
     if request.method == 'POST':
-        asignacion = get_object_or_404(AsignacionActivo, pk=activo_id)
-        asignacion.fecha_devolucion = timezone.now()
-        asignacion.save()
+        asignacion = get_object_or_404(AsignacionActivo, pk=asignacion_id)
         
-               # Formatear la fecha y hora para enviarlas en la respuesta JSON
+        print(f"ID del activo: {asignacion}")
+
+        # Verificar si el activo ya ha sido devuelto
+        activo_devuelto = asignacion.fecha_devolucion is not None
+
+        # Si el activo aún no ha sido devuelto, marcarlo como devuelto en la base de datos
+        if not activo_devuelto:
+            asignacion.fecha_devolucion = timezone.now()
+            asignacion.save()  # Guardar el activo después de modificar su estado
+
+                        # Obtener el activo asociado a esta asignación
+            activo = asignacion.activo 
+            
+            # Modificar la declaración del activo a 'ACTIVO'
+            activo.declaracion = 'ACTIVO'
+            activo.save()  # Guardar el activo después de modificar su estado
+
+        
+        
+        # Formatear la fecha y hora para enviarlas en la respuesta JSON
         fecha_devolucion = asignacion.fecha_devolucion.strftime("%d/%m/%Y")
         hora_devolucion = asignacion.fecha_devolucion.strftime("%H:%M")
         
-        return JsonResponse({'fecha_devolucion': fecha_devolucion, 'hora_devolucion': hora_devolucion})
+        # Serializar solo los campos necesarios de la asignación
+        asignacion_serializada = serialize('json', [asignacion], fields=('pk', 'fecha_devolucion'))
+
+        # Cargar la cadena JSON serializada en un objeto Python
+        asignacion_serializada_json = json.loads(asignacion_serializada)
+
+        # Acceder a los campos serializados
+        asignacion_campos = asignacion_serializada_json[0]['fields']
+        
+        return JsonResponse({'fecha_devolucion': fecha_devolucion,
+                             'hora_devolucion': hora_devolucion,
+                             'asignacion': asignacion_campos,
+                             'activo_devuelto': not activo_devuelto
+                              })
                 
     else:
         # return redirect('detail_active', iduser=asignacion.id, fecha_devolucion=asignacion.fecha_devolucion)
         return JsonResponse({'error': 'Método no permitido'}, status=405)
-
 
 
 
@@ -206,7 +231,7 @@ def list_actives (request):
                 Q(id__icontains=word) |
                 Q(serie__icontains=word)|
                 Q(codigo_inventario__icontains=word)|
-                Q(hostname__icontains=word) 
+                Q(categoria__icontains=word) 
                 
             )
 
@@ -217,7 +242,7 @@ def list_actives (request):
             return render(request, "crud_actives/list_actives.html",datos)
 
     else:
-        active = activo.objects.order_by('-id')[:10] 
+        active = activo.objects.order_by('id')[:10] 
         datos = {'activos' : active}
         return render(request, "crud_actives/list_actives.html",datos)
 
@@ -437,7 +462,7 @@ def generar_acta_entrega(request, iduser):
         return response
     else:
         usuario = obtener_usuario(iduser)
-        activos = obtener_activos().exclude(declaracion='ASIGNADO')
+        activos = obtener_activos().exclude(declaracion='ASIGNADO') #--> EXCLUYE A LOS ACTIVOS
         contador = obtener_contador()
         context = {'user': usuario, 'activos': activos, 'contador': contador}
         return render(request, 'acta_entrega/acta_entrega.html', context)
@@ -471,13 +496,12 @@ def agrupar_asignaciones_por_fecha(asignaciones):
 #VARIABLES DE ASIGNACION
 def asignar_activo_a_usuario(usuario, activo_entregado):
     asignacion = AsignacionActivo(usuario=usuario, activo=activo_entregado)
-    usuario.activo.add(activo_entregado)
+   
+    activo_entregado.declaracion = 'ASIGNADO'
     asignacion.save()
     
-    usuario.activo.add(activo_entregado)
     
-    activo_entregado.declaracion = 'ASIGNADO'
-    activo_entregado.save()
+
 
 
 

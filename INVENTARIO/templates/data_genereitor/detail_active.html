@@ -57,37 +57,33 @@
         <th>Fecha devolucion</th>
         <th>Acciones</th>
       </tr>
+
+    
     </thead>
     <tbody>
       {% for fecha, asignaciones in asignaciones_agrupadas.items %}
-
-      {% csrf_token %}
+      {% for asignacion in asignaciones %}
       <tr>
+        {% if forloop.first %}
         <td rowspan="{{ asignaciones|length }}">{{ fecha.0 }} {{ fecha.1 }}</td>
-        {% for asignacion, fecha_devolucion in asignaciones %}
-        
+        {% endif %}
         <td>{{ asignacion.id }}</td>
-        <td>{{ asignacion.categoria }}</td>
-        <td>{{ asignacion.descripcion }}</td>
-        <td>{{ asignacion.marca }}</td>
-        <td>{{ asignacion.ambiente }}</td>
-        <td>{{ asignacion.codigo_inventario }}</td>
-        <td>{{ asignacion.modelo }}</td>
-        <td>{{ fecha_devolucion }}</td>
+        <td>{{ asignacion.activo.categoria }}</td>
+        <td>{{ asignacion.activo.descripcion }}</td>
+        <td>{{ asignacion.activo.marca }}</td>
+        <td>{{ asignacion.activo.ambiente }}</td>
+        <td>{{ asignacion.activo.codigo_inventario }}</td>
+        <td>{{ asignacion.activo.modelo }}</td>
+        <td>{{ asignacion.fecha_devolucion }}</td>
         <td>
-          
-            <div class="btn-group">
-
-              {% comment %} <button type="button" class="btn btn-primary btn-sm devolver-activo" data-activo-id="{{ asignacion.id }}">Devolver</button> {% endcomment %}
-              <button type="button" class="btn btn-primary btn-sm devolver-activo" data-activo-id="{{ asignacion.id }}">Devolver</button>
-
-              <button type="button" class="btn btn-danger btn-sm">Baja</button>
-            </div>
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary btn-sm devolver-activo" data-asignacion-id="{{ asignacion.id }}">Devolver</button>
+            <button type="button" class="btn btn-danger btn-sm">Baja</button>
+          </div>
         </td>
-    </tr>
-
-    {% endfor %}
-    {% endfor %}
+      </tr>
+      {% endfor %}
+      {% endfor %}
     </tbody>
   </table>
 
@@ -95,43 +91,55 @@
 
 
 <script>
-const csrftoken = getCookie('csrftoken');
-
-function getCookie(name) {
-    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-    return cookieValue ? cookieValue.pop() : '';
-}
-
-document.querySelectorAll('.devolver-activo').forEach(function(button) {
+  const csrftoken = getCookie('csrftoken');
+  
+  function getCookie(name) {
+      const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+      return cookieValue ? cookieValue.pop() : '';
+  }
+  
+  document.querySelectorAll('.devolver-activo').forEach(function(button) {
     button.addEventListener('click', function() {
-        const activoId = this.getAttribute('data-activo-id');
+        const asignacionId = this.getAttribute('data-asignacion-id'); // Cambiado a asignacionId
+        const button = this;
 
-        fetch(`/devolver_activo/${activoId}/`, {
-            method: 'POST',  // Método de la solicitud
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken
-            },
-            body: JSON.stringify({  // Cuerpo de la solicitud (opcional)
-                activo_id: activoId,
-            }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error al devolver el activo. Código de estado: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Muestra una alerta cuando la fecha de devolución se registre correctamente
-            alert('Fecha de devolución registrada: ' + data.fecha_devolucion + ' ' +  data.hora_devolucion );
-            console.log('Fecha de devolución registrada:', data.fecha_devolucion);
+        // Mostrar un mensaje de confirmación
+        if (confirm(`¿Estás seguro de devolver el activo ${asignacionId}? Recuerda que los activos ya registrados no volverán a registrarse.`)) {
+            const csrftoken = getCookie('csrftoken');
 
-             
-          })
-        .catch(error => {
-            console.error('Error al devolver el activo:', error);
-        });
+            fetch(`/devolver_activo/${asignacionId}/`, {
+                method: 'POST',  // Método de la solicitud
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({  // Cuerpo de la solicitud (opcional)
+                    asignacion_id: asignacionId, // Cambiado a asignacion_id
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error al devolver el activo. Código de estado: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Si el usuario hace clic en Aceptar, continuar con la devolución del activo
+                alert(`Fecha de devolución registrada para el activo ${asignacionId}: ${data.fecha_devolucion} ${data.hora_devolucion}`);
+                console.log('Fecha de devolución registrada:', data.fecha_devolucion);
+                console.log('Fecha de devolución registrada:', data.fecha_devolucion);
+
+                // Refrescar la página
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error al devolver el activo:', error);
+            });
+        } else {
+            // Si el usuario hace clic en Cancelar, no hacer nada
+            alert("La devolución del activo ha sido cancelada.");
+            // Aquí no hay necesidad de realizar ninguna operación adicional
+        }
     });
 });
 </script>

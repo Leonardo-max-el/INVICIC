@@ -41,11 +41,11 @@
     {% for u in activos %}
       <tr style="text-transform: uppercase;">
         <th scope="row">{{ u.id  }}</th>
+        <td>{{ u.categoria }}</td>
         <td>{{ u.modelo }}</td>
         <td>{{ u.serie}}</td>
         <td>{{ u.codigo_inventario }}</td>
         <td>{{ u.descripcion }}</td>
-        <td>{{ u.ambiente }}</td>
         <td>{{ u.direccion }}</td>
         <td class="{% if u.declaracion == 'ASIGNADO' %}declaracion-asignado{% elif u.declaracion == 'ACTIVO' %}declaracion-activo{% else %}declaracion-default{% endif %}">{{ u.declaracion }}</td>
 

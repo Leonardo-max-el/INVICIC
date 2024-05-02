@@ -39,7 +39,7 @@ class activo(models.Model):
     estado_renta = models.CharField(max_length=50, default='')
     proveedor = models.CharField(max_length=50, default='')
     devolucion = models.CharField(max_length=50, default='')
-    declaracion = models.CharField(max_length=20, default= '')
+    declaracion = models.CharField(max_length=20, default= 'ACTIVO')
 
     class Meta:
         db_table = 'activo'
@@ -94,6 +94,7 @@ class AsignacionActivo(models.Model):
     fecha_asignacion = models.DateTimeField(auto_now_add=True)
     fecha_devolucion = models.DateTimeField(null= True, blank= True)
 
+
     class Meta:
         verbose_name = 'Asignación de Activo'
         verbose_name_plural = 'Asignaciones de Activos'
@@ -101,6 +102,8 @@ class AsignacionActivo(models.Model):
 
     def __str__(self):
         return f'{self.usuario.apellidos_y_nombres_adryan} - {self.activo.serie} - {self.fecha_asignacion}'
+
+
 
 class actaEntrega(models.Model):
     id = models.AutoField(primary_key=True)

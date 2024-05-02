@@ -49,8 +49,8 @@ urlpatterns = [
     path('data_user/<int:iduser>',views.data_user, name="data_user"),
     path('data_activo/<int:idactivo>',views.data_activo,name="data_activo"),
     path('detail_active/<int:iduser>', views.detail_active, name="detail_active"),
-    path('devolver_activo/<int:activo_id>/', views.devolver_activo, name='devolver_activo'),
-    
+    path('devolver_activo/<int:asignacion_id>/', views.devolver_activo, name='devolver_activo'),
+
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
