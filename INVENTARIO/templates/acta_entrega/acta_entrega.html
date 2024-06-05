@@ -1,56 +1,89 @@
-{% extends '../index_master.html'%}
+{% extends '../index_master.html' %}
 
 {% block content %}
 <div class="right_col" role="main">
-  <div>	 
+  <div>   
     <h3>Acta de Entrega para: {{ user.apellidos_y_nombres_adryan }}</h3>
-
-   </div>
-
-<form action="" method="POST">
-  {%csrf_token%}
-  <div style="display: inline-block"> 
-
-    <input type="text" name="keyword" id="keyword" class="form-control" style="width: 200px; display: inline-block" style="width: 200px;">
-    <button type="submit" name="search" class="btn btn-success" style="display: inline-block"><i class="fa fa-search"></i></button>
-
   </div>
-</form>
-<button name="agregar" class="btn btn-primary" onclick="window.location.href='add_actives'"><i class="fa fa-plus"></i>Buscar</button>
+  <form action="" method="POST">
+    {% csrf_token %}
+    <div style="display: inline-block"> 
+      <input type="text" name="keyword" id="keyword" class="form-control" style="width: 200px; display: inline-block">
+      <button type="submit" name="search" class="btn btn-success" style="display: inline-block"><i class="fa fa-search"></i> Buscar</button>
+    </div>
+    <button name="agregar" class="btn btn-primary" onclick="window.location.href='add_actives'" type="button"><i class="fa fa-plus"></i> Nuevo Activo</button>
 
-<table class="table table-striped border-light">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Categoria</th>
-        <th scope="col">Marca/modelo</th>
-        <th scope="col">Serie</th>
-        <th scope="col">Estado</th>
-        <th>Seleccionar</th>
+    <table class="table table-striped border-light">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Categoría</th>
+          <th scope="col">Marca/modelo</th>
+          <th scope="col">Serie</th>
+          <th scope="col">Estado</th>
+          <th>Seleccionar</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in page_obj %}
+          <tr style="text-transform: uppercase;">
+            <th scope="row">{{ u.id }}</th>
+            <td>{{ u.categoria }}</td>
+            <td>{{ u.descripcion }}</td>
+            <td>{{ u.modelo }}</td>
+            <td>{{ u.estado }}</td>
+            <td><input type="checkbox" name="activo" value="{{ u.id }}"></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-      </tr>
-    </thead>
-    <tbody>
+    <div class="pagination justify-content-center">
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1" aria-label="First">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Primero</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                <span aria-hidden="true">&lt;</span>
+                <span class="sr-only">Anterior</span>
+              </a>
+            </li>
+          {% endif %}
+          
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+          {% endfor %}
+  
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">&gt;</span>
+                <span class="sr-only">Siguiente</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Último</span>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
 
-    {% for u in activos %}
-      <tr style="text-transform: uppercase;">
-        <th scope="row">{{ u.id  }}</th>
-        <td>{{ u.categoria}}</td>
-        <td>{{ u.descripcion }}</td>
-        <td>{{ u.modelo }}</td>
-        <td>{{ u.estado }}</td>
-
-        <td><input type="checkbox" name="activo" value="{{ u.id }}"></td>
-
-        
-      </tr>
-    {% endfor %}
-    </tbody>
-
-  </table>
-  <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left"> Volver</i> </button>
-  <button type="submit" class="btn btn-primary"  class="fa fa-file" name="generar_acta"><i class="fa fa-file"></i> Generar word</button>
-
-
+    <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"><i class="fa fa-arrow-left"></i> Volver</button>
+    <button type="submit" class="btn btn-primary" name="generar_acta"><i class="fa fa-file"></i> Generar Word</button>
+  </form>
 </div>
 {% endblock %}

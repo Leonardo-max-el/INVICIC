@@ -1,67 +1,97 @@
-{% extends '../index_master.html'%}
+{% extends '../index_master.html' %}
 
 {% block content %}
-
-
-
-
-
 <div class="right_col" role="main">
-<h1>Lista de Activos</h1>
+  <h1>Lista de Activos</h1>
 
-<form action="" method="POST">
-  {%csrf_token%}
-  <div style="display: inline-block"> 
+  <form action="" method="POST">
+    {% csrf_token %}
+    <div style="display: inline-block"> 
+      <input type="text" name="keyword" id="keyword" class="form-control" style="width: 200px; display: inline-block">
+      <button type="submit" name="search" class="btn btn-success" style="display: inline-block"><i class="fa fa-search"></i></button>
+    </div>
+  </form>
+  
+  <button name="agregar" class="btn btn-primary" onclick="window.location.href='add_actives'"><i class="fa fa-plus"></i> Nuevo Activo</button>
 
-    <input type="text" name="keyword" id="keyword" class="form-control" style="width: 200px; display: inline-block" style="width: 200px;">
-    <button type="submit" name="search" class="btn btn-success" style="display: inline-block"><i class="fa fa-search"></i></button>
-
-  </div>
-</form>
-<button name="agregar" class="btn btn-primary" onclick="window.location.href='add_actives'"><i class="fa fa-plus"></i>Nuevo Activo</button>
-
-<table class="table table-striped border-light">
+  <table class="table table-striped border-light">
     <thead>
       <tr>
         <th scope="col">#</th>
         <th scope="col">Modelo</th>
         <th scope="col">Serie/modelo</th>
-        <th scope="col">Codigo Inventario</th>
-        <th scope="col">Descripcion</th>
+        <th scope="col">Código Inventario</th>
+        <th scope="col">Descripción</th>
         <th scope="col">Ambiente</th>
         <th scope="col">Dirección</th>
-        <th scope="col">Declaracion</th>
-   
-
-
+        <th scope="col">Declaración</th>
+        <th scope="col">Acciones</th>
       </tr>
     </thead>
     <tbody>
-
-    {% for u in activos %}
-      <tr style="text-transform: uppercase;">
-        <th scope="row">{{ u.id  }}</th>
-        <td>{{ u.categoria }}</td>
-        <td>{{ u.modelo }}</td>
-        <td>{{ u.serie}}</td>
-        <td>{{ u.codigo_inventario }}</td>
-        <td>{{ u.descripcion }}</td>
-        <td>{{ u.direccion }}</td>
-        <td class="{% if u.declaracion == 'ASIGNADO' %}declaracion-asignado{% elif u.declaracion == 'ACTIVO' %}declaracion-activo{% else %}declaracion-default{% endif %}">{{ u.declaracion }}</td>
-
-        <td>
-          <button class="btn btn-warning" onclick="window.location.href='update_actives/{{ u.id }}' "><i class="fa fa-refresh"></i> </button>
-          <button class="btn btn-danger" onclick="window.location.href ='delete_actives/{{ u.id }}'"><i class="fa fa-trash"></i> </button>
-
-
-          <button name="acta" class="btn btn-primary" onclick="window.location.href='data_activo/{{ u.id }}'"><i class="fa fa-eye" aria-hidden="true"></i></button> 
-          <button class="btn btn-info" onclick="window.location.href='info_acta/{{ u.id }}'"><i class="fa fa-envelope-o"></i> </button>
-
-        </td>
-      </tr>
-    {% endfor %}
+      {% for u in page_obj %}
+        <tr style="text-transform: uppercase;">
+          <th scope="row">{{ u.id }}</th>
+          <td>{{ u.categoria }}</td>
+          <td>{{ u.modelo }}</td>
+          <td>{{ u.serie }}</td>
+          <td>{{ u.codigo_inventario }}</td>
+          <td>{{ u.descripcion }}</td>
+          <td>{{ u.direccion }}</td>
+          <td class="{% if u.declaracion == 'ASIGNADO' %}declaracion-asignado{% elif u.declaracion == 'ACTIVO' %}declaracion-activo{% else %}declaracion-default{% endif %}">{{ u.declaracion }}</td>
+          <td>
+            <button class="btn btn-warning" onclick="window.location.href='update_actives/{{ u.id }}'"><i class="fa fa-refresh"></i></button>
+            <button class="btn btn-danger" onclick="window.location.href='delete_actives/{{ u.id }}'"><i class="fa fa-trash"></i></button>
+            <button name="acta" class="btn btn-primary" onclick="window.location.href='data_activo/{{ u.id }}'"><i class="fa fa-eye" aria-hidden="true"></i></button>
+            <button class="btn btn-info" onclick="window.location.href='info_acta/{{ u.id }}'"><i class="fa fa-envelope-o"></i></button>
+          </td>
+        </tr>
+      {% endfor %}
     </tbody>
-  
   </table>
+
+  <div class="pagination justify-content-center">
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page=1" aria-label="First">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Primero</span>
+            </a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+              <span aria-hidden="true">&lt;</span>
+              <span class="sr-only">Anterior</span>
+            </a>
+          </li>
+        {% endif %}
+        
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+              <span aria-hidden="true">&gt;</span>
+              <span class="sr-only">Siguiente</span>
+            </a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Último</span>
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
 </div>
 {% endblock %}

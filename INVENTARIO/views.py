@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from .models import activo, user,Contador, AsignacionActivo
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.core.serializers import serialize
 from .forms import ActaEntregaForm
@@ -118,18 +119,17 @@ def data_user(request,iduser):
 
 
 
-    
 def data_activo(request, idactivo):
-    
-    activos = get_object_or_404(activo, pk=idactivo)
+    activo_obj = get_object_or_404(activo, pk=idactivo)
+    asignacion = AsignacionActivo.objects.filter(activo=activo_obj, fecha_devolucion__isnull=True).first()
+    usuario_asignado = asignacion.usuario if asignacion else None
     
     context = {
-        'activo':activos
+        'activo': activo_obj,
+        'usuario_asignado': usuario_asignado,
     }
     
-    return render(request, "data_genereitor/data_activo.html",context)
-
-
+    return render(request, "data_genereitor/data_activo.html", context)
 
 
 
@@ -220,6 +220,10 @@ def devolver_activo(request, asignacion_id):
 def acta_entrega (request):
     return render(request, "acta_entrega.html")
 
+
+
+
+
 def list_actives (request):
     if request.method=='POST':
         word = request.POST.get('keyword')
@@ -235,16 +239,19 @@ def list_actives (request):
                 
             )
 
-            datos = {'activos': resultado_busqueda}
-            return render(request, "crud_actives/list_actives.html",datos)
-        else:
-            datos = {'activos' : list}
-            return render(request, "crud_actives/list_actives.html",datos)
 
+            paginator = Paginator(resultado_busqueda, 8)  # 10 usuarios por página
+        else:
+            paginator = Paginator(list, 8)
     else:
-        active = activo.objects.order_by('id')[:10] 
-        datos = {'activos' : active}
-        return render(request, "crud_actives/list_actives.html",datos)
+        activos = activo.objects.all()
+        paginator = Paginator(activos, 8)  # 10 usuarios por página
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    datos = {'page_obj': page_obj}
+
+    return render(request, "crud_actives/list_actives.html",datos)
 
 
 
@@ -345,17 +352,20 @@ def list_user(request):
 
 
             )
-
-            datos = {'usuarios': resultado_busqueda}
-            return render(request, "crud_users/list_user.html", datos)
+            
+            paginator = Paginator(resultado_busqueda, 8)  # 10 usuarios por página
         else:
-            datos = {'usuarios': lista}
-            return render(request, "crud_users/list_user.html", datos)
-
+            paginator = Paginator(lista, 8)
     else:
-        usuarios = user.objects.order_by('id')[:10]
-        datos = {'usuarios': usuarios}
-        return render(request, "crud_users/list_user.html", datos)
+        usuarios = user.objects.all()
+        paginator = Paginator(usuarios, 8)  # 10 usuarios por página
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    datos = {'page_obj': page_obj}
+
+    return render(request, "crud_users/list_user.html", datos)
+
 
 
 
@@ -436,9 +446,23 @@ def delete_user (request, iduser):
 #============FUNCIONES ANIDADADES DEL GENERADOR DEL ACTA DE ENTREGA====#
 
 def generar_acta_entrega(request, iduser):
+    keyword = request.POST.get('keyword', '')  # Obtén la palabra clave de la solicitud POST
+    activos_list = obtener_activos().exclude(declaracion='ASIGNADO')
+    
+    if keyword:  # Si hay una palabra clave, filtra los activos
+        activos_list = activos_list.filter(
+            Q(categoria__icontains=keyword) |
+            Q(descripcion__icontains=keyword) |
+            Q(modelo__icontains=keyword) |
+            Q(estado__icontains=keyword)
+        )
+    
+    paginator = Paginator(activos_list, 10)  # 10 activos por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     if request.method == 'POST' and 'generar_acta' in request.POST:
         usuario = obtener_usuario(iduser)
-        activos = obtener_activos()
         contador = obtener_contador()
         activos_seleccionados = request.POST.getlist('activo')
         activos_entregados = activo.objects.filter(pk__in=activos_seleccionados)
@@ -448,7 +472,6 @@ def generar_acta_entrega(request, iduser):
         
         for activo_entregado in activos_entregados:
             asignar_activo_a_usuario(usuario, activo_entregado)
-
         
         actualizar_contador()
         convertir_campos_a_mayusculas(activos_entregados)
@@ -462,9 +485,8 @@ def generar_acta_entrega(request, iduser):
         return response
     else:
         usuario = obtener_usuario(iduser)
-        activos = obtener_activos().exclude(declaracion='ASIGNADO') #--> EXCLUYE A LOS ACTIVOS
         contador = obtener_contador()
-        context = {'user': usuario, 'activos': activos, 'contador': contador}
+        context = {'user': usuario, 'page_obj': page_obj, 'contador': contador, 'keyword': keyword}
         return render(request, 'acta_entrega/acta_entrega.html', context)
 
 
