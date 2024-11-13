@@ -5,17 +5,18 @@ from django.conf.urls.static import static
 from django import views
 from .views import generar_acta_entrega
 from . import views
-
+# from .views import custom_login_view
 
 urlpatterns = [
     
+    path('', views.index, name="index"),
     path('index', views.index, name="index"),
     
     
     # Implementacion de logeo
     path('register',views.register, name="register"),
     path('clouses',views.clouses, name="clouses"),
-    path("", views.login , name="login"),
+    path('login', views.custom_login_view, name='login'),
     
     
     # Enlaces CRUD de activos

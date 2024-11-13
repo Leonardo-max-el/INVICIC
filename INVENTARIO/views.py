@@ -1,10 +1,10 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
-from .models import activo, user,Contador, AsignacionActivo
+from .models import activo, UserData,Contador, AsignacionActivo
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.core.serializers import serialize
-from .forms import ActaEntregaForm
+
 from django.core.mail import EmailMessage
 from io import BytesIO
 from datetime import datetime
@@ -25,17 +25,29 @@ from docx.oxml import parse_xml
 
 from django.contrib.auth import login as django_login
 
-from django.contrib.auth.forms import UserCreationForm,AuthenticationForm  
-from django.contrib.auth.models import  User
+
 from django.contrib.auth import login,logout,authenticate
-from django.db import  IntegrityError
+
 
 from itertools import groupby
 from operator import attrgetter 
-from collections import defaultdict
+
 
 from django.http import JsonResponse
-import pdb
+
+
+from .forms import RegistroForm
+from django.contrib import messages
+from .forms import LoginForm
+from django.contrib.auth import authenticate, login 
+from django.contrib.auth.hashers import make_password
+from django.views.decorators.cache import never_cache
+
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User
+from django.contrib.auth import login, logout, authenticate
+
+
 TEMPLATE_DIRS = (
     'os.path.join(BASE_DIR, "templates")'
 )
@@ -47,67 +59,76 @@ def index (request):
     return render(request, "index.html")
 
 
-def register (request):
+def register(request):
     
-    if request.method == 'GET':
-        return render (request, 'acces_user/register.html',{
+    if request.method == 'GET':    
+        return render(request, 'acces_user/register.html', {
             'form':UserCreationForm
         })
     
     else:
-        if request.POST['password1']== request.POST['password2']:
-            #register user
-           try: 
-                users = user.objects.create_user(
-                username=request.POST['username'],
-                password=request.POST['password1'])
-                users.save()
-                login(request,user)
-                return  redirect('index') 
-           except IntegrityError:  
-                return render (request, 'acces_user/register.html',{
-                    'form': UserCreationForm,
-                    "error":'Username already exists'
-                })
-
+        if request.POST['password1'] == request.POST['password2']:
+            try:
+                user = User.objects.create_user(username=request.POST['username'], password=request.
+                                        POST['password1'])
+                user.save()
+                login(request, user)
+                return redirect('index')
+            
+                return HttpResponse('Usuario creado exitosamente!!!!!!!!')
+            except:
+                
+                return render(request, 'acces_user/register.html', {
+                'form':UserCreationForm,
+                "error": 'EL usuario ya existe'
+            })
 
         return render(request, 'acces_user/register.html',{
-            'form':UserCreationForm,
-            "error":'Password do not match'
-        })             
-        
+            'form': UserCreationForm,
+            "error": 'Contraseña Incorrecta'
+        })
+
+
+
+
 def clouses(request):
+    
      
      logout(request)
      return redirect('data_genereitor/data_user.html')
      
     
-    
-    
-def login(request):
+@never_cache
+def custom_login_view(request):
+
     if request.method == 'GET':
-        return render(request, 'acces_user/login.html',
-                      {
-                          'form':AuthenticationForm
-                      })
+        return render(request,'acces_user/login.html',{
+            'form':AuthenticationForm
+        })
+        
     else:
-        user = authenticate(request, username=request.POST['username'], password=request.POST
-                     ['password'])
+        user = authenticate(
+            request, username=request.POST['username'], password=request.POST
+            ['password'])
         
         if user is None:
-            return render(request, 'acces_user/login.html',{
-                'form': AuthenticationForm,
-                'error': 'username or password is incorrect'
+            return render (request, 'acces_user/login.html',{
+              'form': AuthenticationForm,
+              'error': "La contraseña de la usuari@ es incorrecto"
+            
             })
+            
         else:
-             django_login(request, user)  
-             return redirect('index')
+            login(request, user)
+            return redirect('index')
+            
+
 
 
 
 def data_user(request,iduser):
 
-    usuario = get_object_or_404(user, pk=iduser)
+    usuario = get_object_or_404(UserData, pk=iduser)
     
     context={
         'user':usuario
@@ -137,7 +158,7 @@ def data_activo(request, idactivo):
 
 def detail_active(request, iduser):
 
-    usuario = get_object_or_404(user, pk=iduser)
+    usuario = get_object_or_404(UserData, pk=iduser)
 
     asignaciones = AsignacionActivo.objects.filter(usuario=usuario).order_by('fecha_asignacion')
     
@@ -338,7 +359,7 @@ def delete_actives  (request, idactive):
 def list_user(request):
     if request.method == 'POST':
         palabra = request.POST.get('keyword')
-        lista = user.objects.all()
+        lista = UserData.objects.all()
 
         if palabra is not None:
             resultado_busqueda = lista.filter(
@@ -357,7 +378,7 @@ def list_user(request):
         else:
             paginator = Paginator(lista, 8)
     else:
-        usuarios = user.objects.all()
+        usuarios = UserData.objects.all()
         paginator = Paginator(usuarios, 8)  # 10 usuarios por página
 
     page_number = request.GET.get('page')
@@ -491,7 +512,7 @@ def generar_acta_entrega(request, iduser):
 
 
 def obtener_usuario(iduser):
-    return get_object_or_404(user, pk=iduser)
+    return get_object_or_404(UserData, pk=iduser)
     
     
     
@@ -644,7 +665,7 @@ def import_usuarios(request):
                 df['Fecha de nacimiento (ADRYAN)'] = pd.to_datetime(df['Fecha de nacimiento (ADRYAN)'], format='%d/%m/%Y').dt.strftime('%Y-%m-%d')
 
                 for index, row in df.iterrows():
-                    usuario = user(
+                    usuario = UserData(
                         planilla=row['Planilla'],
                         unidad_de_negocio= row['Unidad de negocio'],
                         area_de_trabajo=row['Área de trabajo'],

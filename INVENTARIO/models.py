@@ -5,15 +5,18 @@ from django.core.validators import MaxValueValidator
 
 class work(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=30, null=False)
-    lastname = models.CharField(max_length=30, null=False)
+    name = models.CharField(max_length=30, null=False, default='Nombre por defecto')
+    correo = models.EmailField(max_length=100, null=False, unique=True, default='correo@ejemplo.com')
+    contraseña = models.CharField(max_length=100, null=False, default='contraseña123')
+    is_active = models.BooleanField(default=True)
+    last_login = models.DateTimeField(null=True, blank=True)
 
 class Meta:
 
     verbose_name_plural = "works"
 
 def __str__(self):
-    return f"{self.apellidos_y_nombres}"
+    return f"{self.correo}" 
 
 
 # activo
@@ -48,7 +51,7 @@ class activo(models.Model):
         return f"{self.serie}"
 
 
-class user(models.Model):
+class UserData(models.Model):
     id = models.AutoField(primary_key=True)
     
     planilla = models.CharField(max_length=10, default='')
@@ -82,14 +85,14 @@ class user(models.Model):
 
 
     class Meta:
-        db_table = 'user'
+        db_table = 'UserData'
 
     def __str__(self):
         return self.apellidos_y_nombres_adryan
 
 class AsignacionActivo(models.Model):
     id = models.AutoField(primary_key=True)
-    usuario = models.ForeignKey(user, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(UserData, on_delete=models.CASCADE)
     activo = models.ForeignKey(activo, on_delete=models.CASCADE)
     fecha_asignacion = models.DateTimeField(auto_now_add=True)
     fecha_devolucion = models.DateTimeField(null= True, blank= True)
@@ -107,7 +110,7 @@ class AsignacionActivo(models.Model):
 
 class actaEntrega(models.Model):
     id = models.AutoField(primary_key=True)
-    usuario = models.ForeignKey(user, on_delete=models.CASCADE)  # Establece la relación con la tabla de usuarios
+    usuario = models.ForeignKey(UserData, on_delete=models.CASCADE)  # Establece la relación con la tabla de usuarios
     archivo_pdf = models.FileField(upload_to='actas_entrega_pdfs/')
     fecha_registro = models.DateTimeField(auto_now_add=True)
 

@@ -50,6 +50,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# Configura la URL de redireccionamiento después del login
+LOGIN_REDIRECT_URL = '/index'
+LOGOUT_REDIRECT_URL = '/login'  # Si quieres redirigir a la página de login después de cerrar sesión
 
 ROOT_URLCONF = 'INVIC.urls'
 
@@ -62,7 +65,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
+                'django.contrib.auth.context_processors.auth',  # Solo una vez
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -145,3 +148,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+AUTHENTICATION_BACKENDS = [
+    'INVENTARIO.backends.EmailBackend',  # Reemplaza 'tu_app' con el nombre de tu aplicación
+    'django.contrib.auth.backends.ModelBackend',  # Mantén este backend para compatibilidad con el sistema de autenticación predeterminado de Django
+]

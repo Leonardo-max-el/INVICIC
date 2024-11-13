@@ -1,13 +1,59 @@
-<h1>Aqui el logeo</H1>
 
-{{ error }}
-<form action="" method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
+{% extends '../index_master.html' %}
 
-    <button>
-        Sigin
-    </button>
+{% block content %}
+<div class="right_col" role="main">
+    <h1 style="text-align:center">Iniciar Sesión</h1>
+
+    <main class="container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <form method="post" class="card card-body">
+                    <div class="mb-3" >
+                        {{error}}
+                        {% csrf_token %}  
+                      <label for="username" class="form-label">Correo Electronico</label>
+                      <input type="username" class="form-control" id="username" name="username">
+                    </div>
+                    <div class="mb-3">
+                      <label for="id_password" class="form-label">Password</label>
+                      <input type="password" name="password" class="form-control" id="id_password">
+                    </div>
+            
+                    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                  </form>
+            </div>
+        </div>
+    </main>
+    
+    
+    
+    
+    
+        
+        {% comment %} <form method="post">
+            <dvi class="mb-3" >
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            </div>
+        </form> {% endcomment %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            <script>
+                // Verificar si hay un mensaje de éxito (indicando inicio de sesión exitoso) para activar el redireccionamiento
+                var successMessage = document.querySelector('ul li');
+                if (successMessage && successMessage.innerText.includes('Inicio de sesión exitoso')) {
+                    // Eliminar la página de inicio de sesión del historial del navegador
+                    window.history.replaceState({}, document.title, "/");
+                }
+            </script>
+        {% endif %}
+    
 
 
-</form>
+{% endblock %}

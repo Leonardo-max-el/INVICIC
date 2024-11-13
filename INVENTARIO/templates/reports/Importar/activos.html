@@ -9,7 +9,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" name="excel_activos">
-        <button type="submit" class="btn btn-success" onclick="showAlertAndRedirect('Archivos importados correctamente', '{% url 'list_actives' %}')">Importar Usuarios</button>
+        <button type="submit" class="btn btn-success" onclick="showAlertAndRedirect('Archivos importados correctamente', '{% url 'list_actives' %}')">Importar Activos</button>
 
         <script>
             function showAlertAndRedirect(message, redirectUrl) {
