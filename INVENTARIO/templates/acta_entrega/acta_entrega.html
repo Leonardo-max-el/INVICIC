@@ -3,9 +3,9 @@
 {% block content %}
 <div class="right_col" role="main">
   <div>   
-    <h3>Acta de Entrega para: {{ user.apellidos_y_nombres_adryan }}</h3>
+    <h3>Acta de Entrega para: {{ usuario.apellidos_y_nombres_adryan }}</h3>
   </div>
-  <form action="" method="POST">
+  <form id="form-generar-acta" action="" method="POST">
     {% csrf_token %}
     <div style="display: inline-block"> 
       <input type="text" name="keyword" id="keyword" class="form-control" style="width: 200px; display: inline-block">
@@ -81,9 +81,19 @@
         </ul>
       </nav>
     </div>
-
     <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"><i class="fa fa-arrow-left"></i> Volver</button>
     <button type="submit" class="btn btn-primary" name="generar_acta"><i class="fa fa-file"></i> Generar Word</button>
   </form>
-</div>
+
+  <script type="text/javascript">
+    document.getElementById('form-generar-acta').addEventListener('submit', function () {
+        // Esperar 1 segundo antes de refrescar la página
+        setTimeout(function () {
+            location.reload(); // Recargar la página
+        }, 1000); // 1000ms = 1 segundo
+    });
+</script>
+
+
+
 {% endblock %}

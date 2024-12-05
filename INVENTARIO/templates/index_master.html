@@ -49,12 +49,13 @@
             <!-- menu profile quick info -->
             <div class="profile clearfix">
               <div class="profile_pic">
-                <img src="../static/FrWork/admin_lte/build/images/server.png" alt="..." class="img-circle profile_img">
+                {% load static %}
+                <img src="{% static "FrWork/admin_lte/build/images/server.png" %}" alt="..." class="img-circle profile_img">
                 
               </div>
               <div class="profile_info">
-                <span>Bienvenido,</span>
-                <h2>Nombre del Usuario</h2>
+                <span>Bienvenido</span>
+                <h2>{{ user.first_name }}</h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -68,71 +69,89 @@
                 <ul class="nav side-menu">
                   <li><a><i class="fa fa-home" aria-hidden="true"></i> Home <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
+                      {% if not user.is_authenticated %}
                       <li><a href="{% url 'register' %}" ><i class="fa fa-list" aria-hidden="true"></i>Registrarse</a></li>
                        <li><a href="{% url 'login' %}" ><i class="fa fa-plus" aria-hidden="true"></i>Iniciar Sesión</a></li> 
-
+                      {% endif %}
                     </ul>
                   </li>
                   <li><a><i class="fa fa-users" aria-hidden="true"></i> Usuarios <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
+                      
+                      {% if user.is_authenticated %}
                       <li><a href="{% url 'list_user' %}"><i class="fa fa-list" aria-hidden="true"></i>Listar</a></li>
+                      {% endif %}
+                      {% if request.user.username == "lquito" %}
                       <li><a href="{% url 'add_user' %}"><i class="fa fa-plus" aria-hidden="true"></i>Agregar</a></li>
-                      <li><a href="/update_user/0"><i class="fa fa-refresh" aria-hidden="true"></i>Actualizar</a></li>
-                      <li><a href="/delete_user/0"><i class="fa fa-trash" aria-hidden="true"></i>Eliminar</a></li>
+                      <li><a href="{% url 'list_user' %}"><i class="fa fa-refresh" aria-hidden="true"></i>Actualizar</a></li>
+                      <li><a href={% url 'list_user' %}><i class="fa fa-trash" aria-hidden="true"></i>Eliminar</a></li>
+                      {% endif %}
+
                     </ul>
+                    
                   </li>
                   <li><a><i class="fa fa-edit"></i> Activos <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
+                      {% if user.is_authenticated %}
                         <li><a href="{% url 'list_actives' %}"><i class="fa fa-list" aria-hidden="true"></i>Listar</a></li>
-                
-                        {% if user.is_authenticated %}
-
+                      {% endif %}
+                        
+                      {% if request.user.username == "lquito" %}
                         <li><a href="{% url 'add_actives' %}"><i class="fa fa-plus" aria-hidden="true"></i>Agregar</a></li>
-                        <li><a href="/update_actives/0"><i class="fa fa-refresh" aria-hidden="true"></i>Actualizar</a></li>
-                        <li><a href="/delete_actives/0"><i class="fa fa-trash" aria-hidden="true"></i>Eliminar</a></li>
+                        <li><a href={% url 'list_actives' %}><i class="fa fa-refresh" aria-hidden="true"></i>Actualizar</a></li>
+                        <li><a href={% url 'list_actives' %}><i class="fa fa-trash" aria-hidden="true"></i>Eliminar</a></li>
                         {% endif %}
                     </ul>
                 </li>
                 
-                  <li ><a><i class="fa fa-clone"></i>Documentacion<span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-clone"></i>Documentacion<span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <!-- <li><a href="#"><i class="fa fa-archive" aria-hidden="true"></i>Acta Entrega</a></li> -->
                       <li><a><i class="fa fa-edit"></i>Importar <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                         
+                          {% if user.is_authenticated %}
                           <li><a href="{% url 'usuarios' %}"><i class="fa fa-list" aria-hidden="true"></i>Usuarios</a></li>
                           <li><a href="{% url 'activos' %}"><i class="fa fa-list" aria-hidden="true"></i>Activos</a></li>
+                          {% endif %}
                         </ul>
                       </li>
                     </ul>
                   </li>
-                   <li style="margin-top:400px">
-                    <li style="font-size:18px">
-                      <a href="{% url 'login' %}"><i class="fa-solid fa-power-off"></i> Cerrar Sesión </a>
-                  </li> 
                 </ul>
               </div>
             </div>
           </div>
           <div>
-            
           </div>
         </div>
-
-
+        
         <div class="top_nav" >
           <div class="nav_menu">
             <div class="nav toggle">
               <a id="menu_toggle"><i class="fa fa-bars"></i></a>
             </div>
+            
+            <div class="top_mav">
+              <nav>
+                  {% if user.is_authenticated %}
+                  <li style="float: right; list-style: none; margin-right: 20px;">
+                      <!-- Formulario para cerrar sesión -->
+                      <form action="{% url 'clouses' %}" method="POST" style="margin-top: 10px; font-size: 18px; display: inline;">
+                          {% csrf_token %}
+                          <input type="hidden" name="logout" value="true"> <!-- Indicador único para clouses -->
+                          <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">
+                              <i class="fa fa-rocket"></i> Cerrar Sesión
+                          </button>
+                      </form>
+                  </li>
+                  {% endif %}
+              </nav>
+          </div>
+          
             <nav class="nav navbar-nav" ></nav>
           </div>
         </div>
-
-
-
-        <!-- ****************************************   -->
-
+        
         {% block content %}
         {% endblock %}
       </div>
@@ -180,6 +199,22 @@
     <!-- Custom Theme Scripts -->
     <script src="{% static '/FrWork/admin_lte/build/js/custom.min.js' %}"></script>
 	
-    
+    <script>
+      // Detectar el cierre de sesión
+      function checkSession() {
+          fetch(window.location.href, { method: 'GET', credentials: 'same-origin' })
+              .then(response => {
+                  if (response.redirected) {
+                      // Si la sesión se cerró, redirigir o recargar la página
+                      window.location.href = response.url;
+                  }
+              });
+      }
+
+      // Verificar cada 10 segundos si la sesión sigue activa
+      setInterval(checkSession, 10000);
+  </script>
+
+
   </body>
 </html>

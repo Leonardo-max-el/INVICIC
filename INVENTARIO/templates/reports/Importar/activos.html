@@ -2,10 +2,52 @@
 
 
 {% block content %}
-
+<style>
+    .messages ul {
+        list-style-type: none; /* Elimina los puntos de lista predeterminados */
+        padding: 0;
+    }
+    
+    .messages li {
+        margin-bottom: 10px; /* Espacio entre los mensajes */
+        padding: 10px;
+        border-radius: 5px;
+        color: #fff; /* Texto blanco */
+    }
+    
+    .alert {
+        font-weight: bold;
+    }
+    
+    .alert.error {
+        background-color: #f44336; /* Rojo para errores */
+    }
+    
+    .alert.warning {
+        background-color: #ff9800; /* Naranja para advertencias */
+    }
+    
+    .alert.success {
+        background-color: #4caf50; /* Verde para éxito */
+    }
+    
+    .alert.info {
+        background-color: #2196f3; /* Azul para información */
+    }
+    </style>
 <div class="right_col" role="main">
     <h1>Importar Activos -</h1>
-
+    {% if messages %}
+    <div class="messages">
+        <ul>
+            {% for message in messages %}
+                <li class="alert {{ message.tags }}">
+                    {{ message|safe }} <!-- |safe permite renderizar HTML en mensajes -->
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" name="excel_activos">

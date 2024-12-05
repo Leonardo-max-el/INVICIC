@@ -7,96 +7,231 @@
     {% csrf_token %}
     
 
-    <div class="form-group row">
-        <label for="serie" class="col-4 col-form-label">ID Usuario</label> 
-        <div class="col-8">
-          <div class="input-group">
-            <div class="input-group-addon">
-                <i class="fa fa-id-badge"></i>
-              </div>
+    <div>
 
-              <select id="id" name="id" class="form-control">
-                {% for u in stores %}
-                    <option value="{{ u.id }}" {%if u.id == actives_id.id %} selected {% endif %}>{{ u.id }}</option>
-                {% endfor %}
-              </select>
-          </div>
-        </div>
-      </div>
+      {% for u in active%}
+      <input type="hidden" name="id" value="{{ activo.id }}">
+      {% endfor %}
 
-      <div class="form-group row">
-        <label for="descripcion" class="col-4 col-form-label">DESCRIPCIÓN:</label> 
-        <div class="col-8">
+    </div>
+
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" class="col-4 col-form-label">Sede</label> 
+
           <div class="input-group">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                <i class="fa fa-sort-numeric-asc"></i>
-              </div>
-            </div> 
-            <input id="descripcion" name="descripcion" type="text" required="required" class="form-control" value="{{  actives_id.description }}">
-          </div>
-        </div>
+            <input style="width: 150px; height: 40px;"
+            id="sede" name="sede" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.sede }}">
       </div>
-      <div class="form-group row">
-        <label for="marc_model" class="col-4 col-form-label">Marca/Modelo</label> 
-        <div class="col-8">
+    </div> 
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Pabellon</label> 
           <div class="input-group">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                <i class="fa fa-500px"></i>
-              </div>
-            </div> 
-            <input id="marc_model" name="marc_model" type="text"  required="required"  class="form-control" value="{{  actives_id.marc_model }}">
-          </div>
-        </div>
+            <input style="width: 60px; height: 40px;"
+            id="pabellon" name="pabellon" type="text" 
+            required="required" class="form-control" value="{{ activo.pabellon }}">
       </div>
-      <div class="form-group row">
-        <label for="serie" class="col-4 col-form-label">Serie</label> 
-        <div class="col-8">
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Tipo de Ambiente</label> 
           <div class="input-group">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                <i class="fa fa-modx"></i>
-              </div>
-            </div> 
-            <input id="serie" name="serie" type="text" class="form-control" required="required"  required="required" value="{{  actives_id.serie }}">
-          </div>
-        </div>
+            <input style="width: 150px; height: 40px;"
+            id="tipo_ambiente" name="tipo_ambiente" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.tipo_ambiente }}">
       </div>
-      <div class="form-group row">
-        <label for="estado" class="col-4 col-form-label">Estado</label> 
-        <div class="col-8">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                <i class="fa fa-battery-half"></i>
-              </div>
-            </div> 
-            <input id="estado" name="estado" type="text"  required="required"  class="form-control" value="{{  actives_id.estade }}" >
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="Observaciones" class="col-4 col-form-label">Observaciones</label> 
-        <div class="col-8">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                <i class="fa fa-battery-half"></i>
-              </div>
-            </div> 
-            <input id="Observaciones" name="Observaciones" type="text" required="required"  class="form-control" value="{{  actives_id.observations }}" >
-          </div>
-        </div>
-      </div>
-      
+    </div>
     
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Ambiente</label> 
+          <div class="input-group">
+            <input style="width: 350px; height: 40px;"
+            id="ambiente" name="ambiente" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.ambiente }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Dirección </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="direccion" name="direccion" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.direccion }}">
+      </div>
+    </div>
+    
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label"> Distrito </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="distrito" name="distrito" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.distrito }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label"> Serie </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="serie" name="serie" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.serie }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Codigo Inventario </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="codigo_inventario" name="codigo_inventario" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.codigo_inventario }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label"> Categoria</label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="categoria" name="categoria" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.categoria}}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label"> Marca </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="marca" name="marca" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.marca }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Descripcion</label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="descripcion" name="descripcion" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.descripcion }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label"> Modelo </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="modelo" name="modelo" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.modelo }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Hostname</label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="hostname" name="hostname" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.hostname }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label"> Estado </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="estado" name="estado" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.estado }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Renta </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="renta" name="renta" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.renta }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Contrato </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="contrato" name="contrato" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.contrato }}">
+      </div>
+    </div>
+
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Estado de Renta </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="estado_renta" name="estado_renta" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.estado_renta }}">
+      </div>
+    </div>
+
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Proveedor </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="proveedor" name="proveedor" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.proveedor }}">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Devolución </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="devolucion" name="devolucion" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.devolucion }}">
+      </div>
+    </div>
+
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" for="apellidos" class="form-label">Declaración </label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="declaracion" name="declaracion" type="text" 
+            required="required" class="form-control"
+            value="{{ activo.declaracion }}">
+      </div>
+    </div>
+
+
+
     <div class="form-group row">
       <div class="offset-4 col-8">
-        <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left"> Volver</i> </button>
+      
         <button name="submit" type="submit" class="btn btn-warning" ><i class="fa fa-refresh">Editar Activo</i> </button>
     
       </div>
     </div>
+
+    <button 
+  name="submit" type="button" class="btn btn-secondary" onclick="location.href='{% url 'list_actives' %}'">
+  <i class="fa fa-arrow-left"> Volver</i>
+</button>
 </div>
 {% endblock %}

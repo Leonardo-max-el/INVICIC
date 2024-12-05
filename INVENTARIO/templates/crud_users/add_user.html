@@ -1,72 +1,266 @@
 {% extends "../index_master.html" %}
 
 {% block content %}
+
+
 <div class="right_col" role="main">
-<h1>Agregar ususarios</h1>
-<form action=" add_user" method="POST">
+  <div>
+    <h1>Agregar Usuario</h1>
+
+    <div style="height: 20px;"></div>
+
+
+<form action="add_user" method="POST">
   {% csrf_token %}
-    <div class="form-group row">
-      <label for="nombre" class="col-4 col-form-label">Nombre</label> 
-      <div class="col-8">
-        <div class="input-group">
-          <div class="input-group-addon">
-            <i class="fa fa-address-card"></i>
-          </div> 
-          <input id="nombre" name="nombre" type="text" required="required" class="form-control">
-        </div>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="apellidos" class="col-4 col-form-label">Apellidos</label> 
-      <div class="col-8">
-        <div class="input-group">
-          <div class="input-group-addon">
-            <i class="fa fa-address-book"></i>
-          </div> 
-          <input id="apellidos" name="apellidos" type="text" required="required" class="form-control">
-        </div>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="gmail" class="col-4 col-form-label">Gmail</label> 
-      <div class="col-8">
-        <div class="input-group">
-          <div class="input-group-addon">
-            <i class="fa fa-google-plus"></i>
-          </div> 
-          <input id="gmail" name="gmail" type="text" class="form-control">
-        </div>
-      </div>
-    </div>
-    <div class="form-group row">
-        <label for="area" class="col-4 col-form-label">Area</label> 
-        <div class="col-8">
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="col-4 col-form-label">Planilla</label> 
+
           <div class="input-group">
-            <div class="input-group-addon">
-                <i class="fa fa-cubes" aria-hidden="true"></i>
-            </div> 
-            <input id="area" name="area" type="text" required="required" class="form-control">
-          </div>
-        </div>
+            <input style="width: 50px; height: 40px;"
+            id="planilla" name="planilla" type="text" 
+            required="required" class="form-control" value="UC">
       </div>
-      <div class="form-group row">
-        <label for="cargo" class="col-4 col-form-label">cargo</label> 
-        <div class="col-8">
+    </div>
+  
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" class="form-label">Unidad de Negocio</label> 
           <div class="input-group">
-            <div class="input-group-addon">
-              <i class="fa fa-gavel" aria-hidden="true"></i>
-            </div> 
-            <input id="cargo" name="cargo" type="text" required="required" class="form-control">
-          </div>
-        </div>
+            <input style="width: 280px; height: 40px;"
+            id="unidad_de_negocio" name="unidad_de_negocio" type="text" 
+            required="required" class="form-control" value="UC Pregrado - Semipresencial">
       </div>
+    </div>
+  
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Área de Trabajo</label> 
+          <div class="input-group">
+            <input style="width: 550px; height: 40px;"
+            id="area_de_trabajo" name="area_de_trabajo" type="text" 
+            required="required" class="form-control" value="Dirección Académica Modalidad Semipresencial y Educación a Distancia">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Sub Área de trabajo</label> 
+          <div class="input-group">
+            <input style="width: 580px; height: 40px;"
+            id="sub_area_de_trabajo" name="sub_area_de_trabajo" type="text" 
+            required="required" class="form-control" value="Dirección Académica Modalidad Semipresencial y Educación a Distancia">
+      </div>
+    </div>
+
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" class="form-label">Ubicación Fisica</label> 
+          <div class="input-group">
+            <input style="width: 150px; height: 40px;"
+            id="ubicacion_fisica" name="ubicacion_fisica" type="text" 
+            required="required" class="form-control" value="Huancayo">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" class="form-label">Local</label> 
+          <div class="input-group">
+            <input style="width: 130px; height: 40px;"
+            id="local" name="local" type="text" 
+            required="required" class="form-control" value="San Carlos">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Naturaleza de Puesto</label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="naturaleza_de_puesto" name="naturaleza_de_puesto" type="text" 
+            required="required" class="form-control" value="Académico">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Nomenclatura de Puesto</label> 
+          <div class="input-group">
+            <input style="width: 600px; height: 40px;"
+            id="nomenclatura_de_puesto" name="nomenclatura_de_puesto" type="text" 
+            required="required" class="form-control" >
+      </div>
+    </div>
+
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Tipo de Puesto</label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="tipo_de_puesto" name="tipo_de_puesto" type="text" 
+            required="required" class="form-control" value="Back Office">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Motivo de Alta</label> 
+          <div class="input-group">
+            <input style="width: 180px; height: 40px;"
+            id="motivo_de_alta" name="motivo_de_alta" type="text" 
+            required="required" class="form-control" value="Reemplazo">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Código de Personal</label> 
+          <div class="input-group">
+            <input style="width: 150px; height: 40px;"
+            id="codigo_de_personal" name="codigo_de_personal" type="text" 
+            required="required" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Apellidos y Nombres (ADRYAN)</label> 
+          <div class="input-group">
+            <input style="width: 400px; height: 40px;"
+            id="apellidos_y_nombres_adryan" name="apellidos_y_nombres_adryan" type="text" 
+            required="required" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Género (ADRYAN)</label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="genero_adryan" name="genero_adryan" type="text" 
+            required="required" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Fecha de Ingreso</label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="fecha_de_ingreso" name="fecha_de_ingreso" type="date"  placeholder="Fecha de Ingreso"
+            required="required" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Tipo de Contrato (ADRYAN)</label> 
+          <div class="input-group">
+            <input style="width: 250px; height: 40px;"
+            id="tipo_de_contrato_adryan" name="tipo_de_contrato_adryan" type="text" 
+            required="required" class="form-control" value="PLAZO INDETERMINADO">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Tipo de Jornada (ADRYAN)</label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="tipo_de_jornada_adryan" name="tipo_de_jornada_adryan" type="text" 
+            required="required" class="form-control" value="Tiempo Completo">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" class="form-label">Nacionalidad(ADRYAN)</label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="nacionalidad_adryan" name="nacionalidad_adryan" type="text" 
+            required="required" class="form-control" value="PERU">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Tiempo de servicio (años)</label> 
+          <div class="input-group">
+            <input style="width: 100px; height: 40px;"
+            id="tiempo_de_servicio_anios" name="tiempo_de_servicio_anios" type="text" 
+            required="required" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;" class="form-label">Tiempo de Servicios (meses)</label> 
+          <div class="input-group">
+            <input style="width: 100px; height: 40px;"
+            id="tiempo_de_servicio_meses" name="tiempo_de_servicio_meses" type="text" 
+            required="required" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Tiempo de Servicios (dias)</label> 
+          <div class="input-group">
+            <input style="width: 100px; height: 40px;"
+            id="tiempo_de_servicio_dias" name="tiempo_de_servicio_dias" type="text" 
+            required="required" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Correo Coorporativo (ADRYAN)</label> 
+          <div class="input-group">
+            <input style="width: 300px; height: 40px;"
+            id="correo_corporativo_adryan" name="correo_corporativo_adryan" type="text" 
+            required="required" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">fecha de nacimiento (ADRYAN)</label> 
+          <div class="input-group">
+            <input style="width: 200px; height: 40px;"
+            id="fecha_de_nacimiento_adryan" name="fecha_de_nacimiento_adryan" type="date"  placeholder="Fecha de Ingreso"
+            required="required" class="form-control" required>
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Edad (ADRYAN)</label> 
+          <div class="input-group">
+            <input style="width: 100px; height: 40px;"
+            id="edad_adryan" name="edad_adryan" type="text" 
+            required="required" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Generación (ADRYAN)</label> 
+          <div class="input-group">
+            <input style="width: 100px; height: 40px;"
+            id="generacion_adryan" name="generacion_adryan" type="text" 
+            required="required" class="form-control" value="Generación ">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Jefe Inmediato Jerárquico</label> 
+          <div class="input-group">
+            <input style="width: 350px; height: 40px;"
+            id="jefe_inmediato_jerarquico" name="jefe_inmediato_jerarquico" type="text" 
+            required="required" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+      <label style="font-weight: bold;"  class="form-label">Reemplaza a</label> 
+          <div class="input-group">
+            <input style="width: 300px; height: 40px;"
+            id="reemplaza_a" name="reemplaza_a" type="text" 
+            required="required" class="form-control">
+      </div>
+    </div>
+    
     <div class="form-group row">
       <div class="offset-4 col-8">
         <button name="submit" type="submit" class="btn btn-primary">Agregar Usuario</button>
-        <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left"> Volver</i> </button>
       </div>
     </div>
   </form>
   
+<button 
+  name="submit" type="button" class="btn btn-secondary" onclick="location.href='{% url 'list_user' %}'">
+  <i class="fa fa-arrow-left"> Volver</i>
+</button>
+
 </div>
 {% endblock%}

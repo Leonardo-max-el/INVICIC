@@ -1,7 +1,12 @@
 {% extends "../index_master.html" %}
 
 {% block content %}
+
+
+
 <div class="right_col" role="main">
+
+ 
 <h1>Listar Usuarios</h1>
 
 <form action="" method="POST">
@@ -21,7 +26,9 @@
       <th scope="col">Apellidos y nombres (ADRYAN)</th>
       <th scope="col">Correo corporativo (ADRYAN)</th>
       <th scope="col">Área de trabajo</th>
+      <th scope="col">Local</th>
       <th scope="col">Ubicación Física</th>
+      <th scope="col">Acción</th>
 
 
     </tr>
@@ -34,14 +41,22 @@
       <td>{{ u.apellidos_y_nombres_adryan }}</td> 
       <td>{{ u.correo_corporativo_adryan }}</td>
       <td>{{ u.area_de_trabajo }}</td>
+      <td>{{ u.local }}</td>
       <td>{{ u.ubicacion_fisica }}</td>
     
       <td>
+
+        
+        {% if request.user.username == "lquito" %}
         <button class="btn btn-warning" onclick="window.location.href='update_user/{{ u.id }}' "><i class="fa fa-refresh"></i> </button>
         <button class="btn btn-danger" onclick="window.location.href='delete_user/{{ u.id }}'"><i class="fa fa-trash"></i> </button>
-        {% comment %} <button name="acta" class="btn btn-primary" onclick="window.location.href='generar_acta_entrega/{{ u.id }}'"><i class="fa fa-file-text-o" aria-hidden="true"></i></button> {% endcomment %}
+        {% endif %}
+        {% if user.is_authenticated %}
         <button name="acta" class="btn btn-primary" onclick="window.location.href='data_user/{{ u.id }}'"><i class="fa fa-eye" aria-hidden="true"></i></button> 
-        <button class="btn btn-info" onclick="window.location.href='info_acta/{{ u.id }}'"><i class="fa fa-envelope-o"></i> </button>
+        {% comment %} <button class="btn btn-info" onclick="window.location.href='info_acta/{{ u.id }}'"><i class="fa fa-envelope-o"></i> </button> {% endcomment %}
+        {% endif %}
+        
+
       </td>
     </tr>
   {% endfor %}
@@ -90,6 +105,9 @@
       {% endif %}
     </ul>
   </nav>
+  
 </div>
+
+
 
 {% endblock%}

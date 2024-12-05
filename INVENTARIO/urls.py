@@ -34,8 +34,8 @@ urlpatterns = [
     path('data_user/update_user/<int:iduser>', views.update_user, name="update_user"),
     
     # Generar acta de entrega
-    path('data_user/generar_acta_entrega/<int:iduser>', generar_acta_entrega,name="acta_entrega"),
-    path('generar_acta_entrega/<int:iduser>', generar_acta_entrega,name="acta_entrega"),
+    path('data_user/generar_acta_entrega/<int:iduser>/<int:user_id>/', generar_acta_entrega,name="acta_entrega"),
+    path('generar_acta_entrega/<int:iduser>/<int:user_id>/', generar_acta_entrega,name="acta_entrega"),
     path('info_acta/<int:iduser>',views.info_acta,name="info_acta"),
     path('delete_ActaEntrega/<int:idacta>/', views.delete_ActaEntrega, name='delete_ActaEntrega'),
 
@@ -49,7 +49,7 @@ urlpatterns = [
     # Informacion general de usuarios y activos
     path('data_user/<int:iduser>',views.data_user, name="data_user"),
     path('data_activo/<int:idactivo>',views.data_activo,name="data_activo"),
-    path('detail_active/<int:iduser>', views.detail_active, name="detail_active"),
+    path('detail_active/<int:iduser>/<int:user_id>/', views.detail_active, name="detail_active"),
     path('devolver_activo/<int:asignacion_id>/', views.devolver_activo, name='devolver_activo'),
 
     

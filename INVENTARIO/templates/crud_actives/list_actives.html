@@ -40,10 +40,14 @@
           <td>{{ u.direccion }}</td>
           <td class="{% if u.declaracion == 'ASIGNADO' %}declaracion-asignado{% elif u.declaracion == 'ACTIVO' %}declaracion-activo{% else %}declaracion-default{% endif %}">{{ u.declaracion }}</td>
           <td>
+            {% if request.user.username == "lquito" %}
             <button class="btn btn-warning" onclick="window.location.href='update_actives/{{ u.id }}'"><i class="fa fa-refresh"></i></button>
             <button class="btn btn-danger" onclick="window.location.href='delete_actives/{{ u.id }}'"><i class="fa fa-trash"></i></button>
+            {% endif %}
+            {% if user.is_authenticated %}
             <button name="acta" class="btn btn-primary" onclick="window.location.href='data_activo/{{ u.id }}'"><i class="fa fa-eye" aria-hidden="true"></i></button>
-            <button class="btn btn-info" onclick="window.location.href='info_acta/{{ u.id }}'"><i class="fa fa-envelope-o"></i></button>
+            {% comment %} <button class="btn btn-info" onclick="window.location.href='info_acta/{{ u.id }}'"><i class="fa fa-envelope-o"></i></button> {% endcomment %}
+            {% endif %}
           </td>
         </tr>
       {% endfor %}

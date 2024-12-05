@@ -49,12 +49,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'middlewares.auto_logout.AutoLogoutMiddleware'
+    
 ]
 # Configura la URL de redireccionamiento después del login
 LOGIN_REDIRECT_URL = '/index'
 LOGOUT_REDIRECT_URL = '/login'  # Si quieres redirigir a la página de login después de cerrar sesión
 
-ROOT_URLCONF = 'INVIC.urls'
+ROOT_URLCONF = 'INVIC_APP.urls'
 
 TEMPLATES = [
     {
@@ -72,7 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'INVIC.wsgi.application'
+WSGI_APPLICATION = 'INVIC_APP.wsgi.application'
 
 
 # Database
@@ -140,7 +142,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -152,3 +154,10 @@ AUTHENTICATION_BACKENDS = [
     'INVENTARIO.backends.EmailBackend',  # Reemplaza 'tu_app' con el nombre de tu aplicación
     'django.contrib.auth.backends.ModelBackend',  # Mantén este backend para compatibilidad con el sistema de autenticación predeterminado de Django
 ]
+
+
+# Duración de la sesión en segundos (15 minutos = 900 segundos)
+SESSION_COOKIE_AGE = 900  # 15 minutos
+
+# Desactiva la persistencia de la sesión si el usuario cierra el navegador
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True

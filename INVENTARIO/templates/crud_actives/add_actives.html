@@ -4,82 +4,236 @@
 <div class="right_col" role="main">
  <h1>Agregar activos</h1>
 
- <form  action="" method="POST"> 
+ <form  action="add_actives" method="POST"> 
   {% csrf_token %}
 
-  <div class="form-group row">
-    <label for="descripcion" class="col-4 col-form-label">DESCRIPCIÓN:</label> 
-    <div class="col-8">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <div class="input-group-text">
-            <i class="fa fa-sort-numeric-asc"></i>
-          </div>
-        </div> 
-        <input id="descripcion" name="descripcion" type="text" required="required" class="form-control">
-      </div>
+ 
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Sede</label> 
+
+        <div class="input-group">
+          <input style="width: 150px; height: 40px;"
+          id="sede" name="sede" type="text" 
+          required="required" class="form-control" value="HUANCAYO">
     </div>
   </div>
-  <div class="form-group row">
-    <label for="marc_model" class="col-4 col-form-label">Marca/Modelo</label> 
-    <div class="col-8">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <div class="input-group-text">
-            <i class="fa fa-500px"></i>
-          </div>
-        </div> 
-        <input id="marc_model" name="marc_model" type="text"  required="required"  class="form-control" >
-      </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Pabellon</label> 
+
+        <div class="input-group">
+          <input style="width: 50px; height: 40px;"
+          id="pabellon" name="pabellon" type="text" 
+          required="required" class="form-control" value="A">
     </div>
   </div>
-  <div class="form-group row">
-    <label for="serie" class="col-4 col-form-label">CODIGO PATRIMONIO</label> 
-    <div class="col-8">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <div class="input-group-text">
-            <i class="fa fa-modx"></i>
-          </div>
-        </div> 
-        <input id="serie" name="serie" type="text" class="form-control" required="required"  required="required">
-      </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;">Tipo Ambiente</label> 
+        <div class="input-group">
+          <input style="width: 150px; height: 40px;"
+          id="tipo_ambiente" name="tipo_ambiente" type="text" 
+          required="required" class="form-control" value="OFICINA">
     </div>
   </div>
-  <div class="form-group row">
-    <label for="estado" class="col-4 col-form-label">SERIE</label> 
-    <div class="col-8">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <div class="input-group-text">
-            <i class="fa fa-battery-half"></i>
-          </div>
-        </div> 
-        <input id="estado" name="estado" type="text"  required="required"  class="form-control" >
-      </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Ambiente</label> 
+
+        <div class="input-group">
+          <input style="width: 400px; height: 40px;"
+          id="ambiente" name="ambiente" type="text" 
+          required="required" class="form-control" value="OFICINA DE RECURSOS TECNOLOGICOS">
     </div>
   </div>
-  <div class="form-group row">
-    <label for="Observaciones" class="col-4 col-form-label">Observaciones</label> 
-    <div class="col-8">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <div class="input-group-text">
-            <i class="fa fa-battery-half"></i>
-          </div>
-        </div> 
-        <input id="Observaciones" name="Observaciones" type="text" required="required"  class="form-control" >
-      </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Dirección</label> 
+
+        <div class="input-group">
+          <input style="width: 300px; height: 40px;"
+          id="direccion" name="direccion" type="text" 
+          required="required" class="form-control" value="HUANCAYO">
     </div>
   </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Distrito</label> 
+
+        <div class="input-group">
+          <input style="width: 200px; height: 40px;"
+          id="distrito" name="distrito" type="text" 
+          required="required" class="form-control" value="HUANCAYO">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Serie</label> 
+
+        <div class="input-group">
+          <input style="width: 250px; height: 40px;"
+          id="serie" name="serie" type="text" 
+          required="required" class="form-control" >
+    </div>
+  </div>
+
   
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;">Código Inventario</label> 
+  
+    <div class="input-group">
+      <input 
+        style="width: 200px; height: 40px;"
+        id="codigo_inventario" 
+        name="codigo_inventario" 
+        type="text" 
+        required="required" 
+        class="form-control" 
+        value="{{ activo.codigo_inventario|default_if_none:'' }}">
+    </div>
+    
+    <!-- Mensaje de error debajo del campo -->
+    {% if errors.codigo_inventario %}
+    <p style="color: red; margin-top: 5px;">{{ errors.codigo_inventario }}</p>
+    {% endif %}
+  </div>
+
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Categoria</label> 
+
+        <div class="input-group">
+          <input style="width: 150px; height: 40px;"
+          id="categoria" name="categoria" type="text" 
+          required="required" class="form-control">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Marca</label> 
+
+        <div class="input-group">
+          <input style="width: 150px; height: 40px;"
+          id="marca" name="marca" type="text" 
+          required="required" class="form-control">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Descripcion</label> 
+
+        <div class="input-group">
+          <input style="width:200px; height: 40px;"
+          id="descripcion" name="descripcion" type="text" 
+          required="required" class="form-control">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Modelo</label> 
+
+        <div class="input-group">
+          <input style="width: 200px; height: 40px;"
+          id="modelo" name="modelo" type="text" 
+          required="required" class="form-control">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Hostname</label> 
+
+        <div class="input-group">
+          <input style="width: 200px; height: 40px;"
+          id="hostname" name="hostname" type="text" 
+          required="required" class="form-control" value="--">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Estado</label> 
+
+        <div class="input-group">
+          <input style="width: 200px; height: 40px;"
+          id="estado" name="estado" type="text" 
+          required="required" class="form-control" value="OPERATIVO">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Renta</label> 
+
+        <div class="input-group">
+          <input style="width: 150px; height: 40px;"
+          id="renta" name="renta" type="text" 
+          required="required" class="form-control" value="NO">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Contrato</label> 
+
+        <div class="input-group">
+          <input style="width: 250px; height: 40px;"
+          id="contrato" name="contrato" type="text" 
+          required="required" class="form-control" value="NO ENCONTRADO">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" >Estado de Renta</label> 
+
+        <div class="input-group">
+          <input style="width: 250px; height: 40px;"
+          id="estado_renta" name="estado_renta" type="text" 
+          required="required" class="form-control" value="NO ENCONTRADO">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Proveedor</label> 
+
+        <div class="input-group">
+          <input style="width: 250px; height: 40px;"
+          id="proveedor" name="proveedor" type="text" 
+          required="required" class="form-control" value="NO ENCONTRADO">
+    </div>
+  </div>
+
+  <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Devolucion</label> 
+
+        <div class="input-group">
+          <input style="width: 250px; height: 40px;"
+          id="devolucion" name="devolucion" type="text" 
+          required="required" class="form-control" value="NO ENCONTRADO">
+    </div>
+  </div>
+
+  {% comment %} <div class="mb-3" style="display: inline-block; margin-right: 10px;">
+    <label style="font-weight: bold;" class="col-4 col-form-label">Declaración</label> 
+
+        <div class="input-group">
+          <input style="width: 250px; height: 40px;"
+          id="declaracion" name="declaracion" type="text" 
+          required="required" class="form-control">
+    </div>
+  </div> {% endcomment %}
+
   <div class="form-group row">
     <div class="offset-4 col-8">
       <button name="submit" type="submit" class="btn btn-primary">Agregar activo</button>
-      <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left"> Volver</i> </button>
     </div>
   </div>
 
 
+
+</form>
+
   
+<button 
+  name="submit" type="button" class="btn btn-secondary" onclick="location.href='{% url 'list_actives' %}'">
+  <i class="fa fa-arrow-left"> Volver</i>
+</button>
+</div>
+
 {% endblock %}

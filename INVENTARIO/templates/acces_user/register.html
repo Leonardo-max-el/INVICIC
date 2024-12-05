@@ -6,19 +6,44 @@
     <h1 style="text-align:center"> Registro de Usuario</h1>
 
 
-<main class="container">
+    <div class="container mt-4">
+        <!-- Condicional para mostrar la alerta solo si existe el mensaje de error -->
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+    </div>
 
+
+
+
+
+<main class="container">
+    
     <div class="row">
-    
         <div class="col-md-4 offset-md-4">
-    
             <form method="post" class="card card-body">
-            
                 <div class="mb-3" >
                     {% csrf_token %}
-                    <label for="id_name" class="form-label">Nombres/Apellidos</label>
-                    <input type="text"  name="username" class="form-control" autofocus required maxlength="100" id="id_username" >
+
+                    <div class="mb-3">
+                        <label for="id_first_name" class="form-label">Nombre</label>
+                        <input type="text" name="first_name" class="form-control" id="id_first_name" required maxlength="100">
+                    </div>
+                    
+                    
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Correo Electrónico</label>
+                    <input type="email" name="email" class="form-control" id="id_email" required maxlength="100">
                 </div>
+
+
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Nombre de Usuario</label>
+                    <input type="text" name="username" class="form-control" id="id_username" required maxlength="150">
+                </div>
+                
 
 
                 <div class="mb-3">
@@ -26,14 +51,12 @@
                     <input type="password" name="password1" class="form-control" autocomplete="new-password" maxlength="100" required  id="id_password1">
                     <span class="helptext"></span>
                 </div>
-
                 <div class="mb-3">
                     <label for="id_password2" class="form-label">Contraseña</label>
                     <input type="password" name="password2" class="form-control" autocomplete="new-password" maxlength="100" required  id="id_password1">
                     <span class="helptext"></span>
                 </div>
-            
-                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                <button type="submit" class="btn btn-primary">Registrarse</button>
             </form>
             </div>
         </div>
