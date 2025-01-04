@@ -29,15 +29,15 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User, Permission, Group
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
-from django.contrib.sessions.models import Session
+from django.db import models
 from django.shortcuts import redirect
 from django.contrib import messages
 
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator
+
 from datetime import datetime
-from django.utils.timezone import now
-from datetime import timedelta
+from django.db.models import Count, Avg, ExpressionWrapper, DurationField
+
 
 
 TEMPLATE_DIRS = (
@@ -47,10 +47,50 @@ TEMPLATE_DIRS = (
 #CREATE-DELETE-LIST AND UPDATE MODEL ACTIVE--->
 #===============#===========================#
 
-def index (request):
+def index(request):
+    # Verificar si el usuario es "lquito"
     is_lquito = request.user.is_authenticated and User.objects.filter(username="lquito").exists()
     print(f"¿Es lquito el usuario? {is_lquito}")
-    return render(request, "index.html", {'is_lquito': is_lquito})
+    
+    # Activos más prestados
+    activos_mas_prestados = (
+        activo.objects.filter(asignacionactivo__fecha_devolucion__isnull=False)  # Activos con devoluciones
+        .annotate(total_prestamos=Count("asignacionactivo"))
+        .order_by("-total_prestamos")[:5]
+    )
+
+    # Usuarios más frecuentes
+    usuarios_mas_frecuentes = (
+        UserData.objects.annotate(total_prestamos=Count("asignacionactivo"))
+        .order_by("-total_prestamos")[:5]
+    )
+
+    # Tiempo promedio de préstamo
+    prestamos = AsignacionActivo.objects.filter(
+        fecha_devolucion__isnull=False  # Solo préstamos devueltos
+    ).annotate(
+        duracion=ExpressionWrapper(
+            models.F("fecha_devolucion") - models.F("fecha_asignacion"),
+            output_field=DurationField()
+        )
+    )
+    tiempo_promedio_prestamo = prestamos.aggregate(
+        promedio=Avg("duracion")
+    )["promedio"]
+
+    # Convertir tiempo promedio a días si existe
+    tiempo_promedio_prestamo_dias = None
+    if tiempo_promedio_prestamo:
+        tiempo_promedio_prestamo_dias = tiempo_promedio_prestamo.days
+
+    context = {
+        "is_lquito": is_lquito,
+        "activos_mas_prestados": activos_mas_prestados,
+        "usuarios_mas_frecuentes": usuarios_mas_frecuentes,
+        "tiempo_promedio_prestamo": tiempo_promedio_prestamo_dias,
+    }
+
+    return render(request, "index.html", context)
 
 
 def register(request):

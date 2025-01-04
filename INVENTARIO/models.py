@@ -107,7 +107,12 @@ class AsignacionActivo(models.Model):
     def __str__(self):
         return f'{self.usuario.apellidos_y_nombres_adryan} - {self.activo.serie} - {self.fecha_asignacion}'
 
-
+    @property
+    def duracion_dias(self):
+        if self.fecha_devolucion:
+            return (self.fecha_devolucion - self.fecha_asignacion).days
+        return None
+    
 
 class actaEntrega(models.Model):
     id = models.AutoField(primary_key=True)

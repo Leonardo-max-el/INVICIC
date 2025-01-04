@@ -2,13 +2,56 @@
 
 {% block content %}
 
-    <!-- page content -->
-        <div class="right_col" role="main">
-       
-                <!-- end of weather widget -->
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- /page content -->
+
+<style>
+  .dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+  }
+  .stat {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+      width: calc(33% - 20px);
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+</style>
+
+
+<div class="right_col" role="main">
+  <h1>Bienvenido al Sistema de Control de Préstamos de Activos</h1>
+  
+  {% if is_lquito %}
+      <p>Hola, lquito! Tienes acceso especial.</p>
+  {% else %}
+      <p>Bienvenido, {{ request.user.username }}.</p>
+  {% endif %}
+
+  <div class="dashboard">
+      <div class="stat">
+          <h3>Activos más prestados</h3>
+          <ul>
+              {% for activo in activos_mas_prestados %}
+                  <li>{{ activo.nombre }} (Prestado {{ activo.total_prestamos }} veces)</li>
+              {% endfor %}
+          </ul>
+      </div>
+
+      <div class="stat">
+          <h3>Usuarios más frecuentes</h3>
+          <ul>
+              {% for usuario in usuarios_mas_frecuentes %}
+                  <li>{{ usuario.apellidos_y_nombres_adryan }} (Préstamos realizados: {{ usuario.total_prestamos }})</li>
+              {% endfor %}
+          </ul>
+      </div>
+
+      <div class="stat">
+          <h3>Tiempo promedio de préstamo</h3>
+          <p>{{ tiempo_promedio_prestamo|floatformat:2 }} días</p>
+      </div>
+  </div>
+</div>
+
 {% endblock %}
