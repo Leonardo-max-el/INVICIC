@@ -36,7 +36,7 @@ urlpatterns = [
     # Generar acta de entrega
     path('data_user/generar_acta_entrega/<int:iduser>/<int:user_id>/', generar_acta_entrega,name="acta_entrega"),
     path('generar_acta_entrega/<int:iduser>/<int:user_id>/', generar_acta_entrega,name="acta_entrega"),
-    path('info_acta/<int:iduser>',views.info_acta,name="info_acta"),
+    path('ver_actas/<int:user_id>/',views.ver_actas_entrega,name="ver_actas_entrega"),
     path('delete_ActaEntrega/<int:idacta>/', views.delete_ActaEntrega, name='delete_ActaEntrega'),
 
     # Importacion de usuarios y activos
@@ -44,7 +44,7 @@ urlpatterns = [
     path('activos', views.import_activos, name="activos"), 
 
     # Informacion de actas del usuario
-    path('info_acta/envio_email',views.envio_email, name="email"),
+    # path('info_acta/envio_email',views.envio_email, name="email"),
     
     # Informacion general de usuarios y activos
     path('data_user/<int:iduser>',views.data_user, name="data_user"),

@@ -1,12 +1,12 @@
 {% extends '../index_master.html'%}
 
 {% block content %}
+
 <div class="right_col" role="main">
+  
 <h1>Actualizar activos</h1>
 <form action="" method="POST"> 
     {% csrf_token %}
-    
-
     <div>
 
       {% for u in active%}
@@ -23,7 +23,7 @@
             <input style="width: 150px; height: 40px;"
             id="sede" name="sede" type="text" 
             required="required" class="form-control"
-            value="{{ activo.sede }}">
+            value="{{ activo_instance.sede }}">
       </div>
     </div> 
 
@@ -32,7 +32,7 @@
           <div class="input-group">
             <input style="width: 60px; height: 40px;"
             id="pabellon" name="pabellon" type="text" 
-            required="required" class="form-control" value="{{ activo.pabellon }}">
+            required="required" class="form-control" value="{{ activo_instance.pabellon }}">
       </div>
     </div>
 
@@ -42,7 +42,7 @@
             <input style="width: 150px; height: 40px;"
             id="tipo_ambiente" name="tipo_ambiente" type="text" 
             required="required" class="form-control"
-            value="{{ activo.tipo_ambiente }}">
+            value="{{ activo_instance.tipo_ambiente }}">
       </div>
     </div>
     
@@ -52,7 +52,7 @@
             <input style="width: 350px; height: 40px;"
             id="ambiente" name="ambiente" type="text" 
             required="required" class="form-control"
-            value="{{ activo.ambiente }}">
+            value="{{ activo_instance.ambiente }}">
       </div>
     </div>
 
@@ -62,7 +62,7 @@
             <input style="width: 200px; height: 40px;"
             id="direccion" name="direccion" type="text" 
             required="required" class="form-control"
-            value="{{ activo.direccion }}">
+            value="{{ activo_instance.direccion }}">
       </div>
     </div>
     
@@ -72,7 +72,7 @@
             <input style="width: 200px; height: 40px;"
             id="distrito" name="distrito" type="text" 
             required="required" class="form-control"
-            value="{{ activo.distrito }}">
+            value="{{ activo_instance.distrito }}">
       </div>
     </div>
 
@@ -82,7 +82,7 @@
             <input style="width: 200px; height: 40px;"
             id="serie" name="serie" type="text" 
             required="required" class="form-control"
-            value="{{ activo.serie }}">
+            value="{{ activo_instance.serie }}">
       </div>
     </div>
 
@@ -92,7 +92,7 @@
             <input style="width: 200px; height: 40px;"
             id="codigo_inventario" name="codigo_inventario" type="text" 
             required="required" class="form-control"
-            value="{{ activo.codigo_inventario }}">
+            value="{{ activo_instance.codigo_inventario }}">
       </div>
     </div>
 
@@ -102,7 +102,7 @@
             <input style="width: 200px; height: 40px;"
             id="categoria" name="categoria" type="text" 
             required="required" class="form-control"
-            value="{{ activo.categoria}}">
+            value="{{ activo_instance.categoria}}">
       </div>
     </div>
 
@@ -112,7 +112,7 @@
             <input style="width: 200px; height: 40px;"
             id="marca" name="marca" type="text" 
             required="required" class="form-control"
-            value="{{ activo.marca }}">
+            value="{{ activo_instance.marca }}">
       </div>
     </div>
 
@@ -122,7 +122,7 @@
             <input style="width: 200px; height: 40px;"
             id="descripcion" name="descripcion" type="text" 
             required="required" class="form-control"
-            value="{{ activo.descripcion }}">
+            value="{{ activo_instance.descripcion }}">
       </div>
     </div>
 
@@ -132,7 +132,7 @@
             <input style="width: 200px; height: 40px;"
             id="modelo" name="modelo" type="text" 
             required="required" class="form-control"
-            value="{{ activo.modelo }}">
+            value="{{ activo_instance.modelo }}">
       </div>
     </div>
 
@@ -142,7 +142,7 @@
             <input style="width: 200px; height: 40px;"
             id="hostname" name="hostname" type="text" 
             required="required" class="form-control"
-            value="{{ activo.hostname }}">
+            value="{{ activo_instance.hostname }}">
       </div>
     </div>
 
@@ -152,7 +152,7 @@
             <input style="width: 200px; height: 40px;"
             id="estado" name="estado" type="text" 
             required="required" class="form-control"
-            value="{{ activo.estado }}">
+            value="{{ activo_instance.estado }}">
       </div>
     </div>
 
@@ -162,7 +162,7 @@
             <input style="width: 200px; height: 40px;"
             id="renta" name="renta" type="text" 
             required="required" class="form-control"
-            value="{{ activo.renta }}">
+            value="{{ activo_instance.renta }}">
       </div>
     </div>
 
@@ -172,7 +172,7 @@
             <input style="width: 200px; height: 40px;"
             id="contrato" name="contrato" type="text" 
             required="required" class="form-control"
-            value="{{ activo.contrato }}">
+            value="{{ activo_instance.contrato }}">
       </div>
     </div>
 
@@ -183,7 +183,7 @@
             <input style="width: 200px; height: 40px;"
             id="estado_renta" name="estado_renta" type="text" 
             required="required" class="form-control"
-            value="{{ activo.estado_renta }}">
+            value="{{ activo_instance.estado_renta }}">
       </div>
     </div>
 
@@ -194,7 +194,7 @@
             <input style="width: 200px; height: 40px;"
             id="proveedor" name="proveedor" type="text" 
             required="required" class="form-control"
-            value="{{ activo.proveedor }}">
+            value="{{ activo_instance.proveedor }}">
       </div>
     </div>
 
@@ -204,7 +204,7 @@
             <input style="width: 200px; height: 40px;"
             id="devolucion" name="devolucion" type="text" 
             required="required" class="form-control"
-            value="{{ activo.devolucion }}">
+            value="{{ activo_instance.devolucion }}">
       </div>
     </div>
 
@@ -215,7 +215,7 @@
             <input style="width: 200px; height: 40px;"
             id="declaracion" name="declaracion" type="text" 
             required="required" class="form-control"
-            value="{{ activo.declaracion }}">
+            value="{{ activo_instance.declaracion }}">
       </div>
     </div>
 
@@ -224,8 +224,9 @@
     <div class="form-group row">
       <div class="offset-4 col-8">
       
-        <button name="submit" type="submit" class="btn btn-warning" ><i class="fa fa-refresh">Editar Activo</i> </button>
-    
+        {% comment %} <button name="submit" type="submit" class="btn btn-warning" ><i class="fa fa-refresh">Editar Activo</i> </button> {% endcomment %}
+        <button name="submit" type="submit" class="btn btn-warning" ><i  class="actualizar-activo" data-activo-id="{{ activo_instance.id }}">Actualizar Activo</button>
+
       </div>
     </div>
 
@@ -233,5 +234,69 @@
   name="submit" type="button" class="btn btn-secondary" onclick="location.href='{% url 'list_actives' %}'">
   <i class="fa fa-arrow-left"> Volver</i>
 </button>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
 </div>
+<script>
+  const csrftoken = getCookie('csrftoken');
+  
+  function getCookie(name) {
+      const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+      return cookieValue ? cookieValue.pop() : '';
+  }
+
+  document.querySelectorAll('.actualizar-activo').forEach(function(button) {
+    button.addEventListener('click', function() {
+        const activoId = this.getAttribute('data-activo-id');  // Cambiado a activoId
+        const button = this;
+
+        // Mostrar un mensaje de confirmación
+        if (confirm(`¿Estás seguro de actualizar el activo ${activoId}? ¿Comprendes que esta acción actualizará todos los datos del activo?`)) {
+            const csrftoken = getCookie('csrftoken');
+
+            fetch(`/update_activo/${activoId}/`, {
+                method: 'POST',  // Método de la solicitud
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({  // Cuerpo de la solicitud (opcional)
+                    activo_id: activoId,  // Cambiado a activo_id
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error al actualizar el activo. Código de estado: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Si el usuario hace clic en Aceptar, continuar con la actualización del activo
+                alert(`Activo ${activoId} actualizado correctamente.`);
+                console.log('Activo actualizado:', data);
+
+                // Refrescar la página o redirigir según sea necesario
+                window.location.reload();  // O puedes hacer un redirect si lo prefieres
+            })
+            .catch(error => {
+                console.error('Error al actualizar el activo:', error);
+            });
+        } else {
+            // Si el usuario hace clic en Cancelar, no hacer nada
+            alert("La actualización del activo ha sido cancelada.");
+            // Aquí no hay necesidad de realizar ninguna operación adicional
+        }
+    });
+});
+</script>
+
 {% endblock %}
+

@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
-from .models import activo, UserData,Contador, AsignacionActivo
+from .models import activo, UserData,Contador, AsignacionActivo,actaEntrega
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.core.serializers import serialize
@@ -37,6 +37,11 @@ from django.core.exceptions import ValidationError
 
 from datetime import datetime
 from django.db.models import Count, Avg, ExpressionWrapper, DurationField
+from django.core.mail import EmailMessage
+from threading import Thread 
+from django.urls import reverse  # Importar reverse
+from .forms import ActaEntregaForm
+from django.core.files.base import ContentFile
 
 
 
@@ -48,9 +53,9 @@ TEMPLATE_DIRS = (
 #===============#===========================#
 
 def index(request):
-    # Verificar si el usuario es "lquito"
-    is_lquito = request.user.is_authenticated and User.objects.filter(username="lquito").exists()
-    print(f"¿Es lquito el usuario? {is_lquito}")
+    # Verificar si el usuario es "totaladmin"
+    is_totaladmin = request.user.is_authenticated and User.objects.filter(username="totaladmin").exists()
+    print(f"¿Es totaladmin el usuario? {is_totaladmin}")
     
     # Activos más prestados
     activos_mas_prestados = (
@@ -84,7 +89,7 @@ def index(request):
         tiempo_promedio_prestamo_dias = tiempo_promedio_prestamo.days
 
     context = {
-        "is_lquito": is_lquito,
+        "is_totaladmin": is_totaladmin,
         "activos_mas_prestados": activos_mas_prestados,
         "usuarios_mas_frecuentes": usuarios_mas_frecuentes,
         "tiempo_promedio_prestamo": tiempo_promedio_prestamo_dias,
@@ -130,17 +135,14 @@ def register(request):
         return render(request, 'acces_user/register.html',{'form': UserCreationForm,"error": 'Contraseñas Incorrecta'})
 
 
-
-
 def clouses(request):
-    # Verifica si la solicitud es POST
     if request.method == 'POST':
-        # Comprueba si el formulario enviado tiene un campo único para cerrar sesión
-        if 'logout' in request.POST:  # Clave 'logout' debe estar en el formulario del cierre de sesión
-            if request.user.is_authenticated:  
+        if 'logout' in request.POST:
+            if request.user.is_authenticated:
                 logout(request)
-            return redirect('login')  # Redirige a la página de inicio de sesión
-    return redirect('index') 
+            return redirect(reverse('login'))  # Usar reverse para generar la URL del login
+    return redirect('index')  # Si no es POST, redirigir al índice
+    
     
 @never_cache
 def custom_login_view(request):
@@ -165,13 +167,15 @@ def custom_login_view(request):
             # Si la autenticación es exitosa, iniciar sesión
             login(request, user)
 
-            # Verificar si el usuario es "lquito"
-            if user.username == "lquito":
-                # Redirigir a una página especial si es "lquito"
-                return redirect('/list_user')  # O la ruta que desees para "lquito"
+            # Verificar si el usuario es "totaladmin"
+            if user.username == "totaladmin":
+                # Redirigir a una página especial si es "totaladmin"
+                return redirect('/list_user')  # O la ruta que desees para "totaladmin"
 
-            # Si no es "lquito", redirigir a /list_user
+            # Si no es "totaladmin", redirigir a /list_user
             return redirect('/list_user')
+
+
 
 
 
@@ -388,39 +392,48 @@ def add_actives(request):
 
 
 
-def update_actives (request, idactive  ):
+def update_actives(request, idactive):
     try:
-        if request.method =='POST':
-            if request.POST.get('id') and request.POST.get ('descripcion') and request.POST.get ('marc_model') and request.POST.get('serie') and request.POST.get('estado')  and request.POST.get('Observaciones') :
-            
-                user_id_old = request.POST.get('id')
-                user_old = active()
-                user_old = active.objects.get(id = user_id_old )
-                
-                active = active()
-                active.id = request.POST.get('id')
-                active.description = request.POST.get('descripcion')
-                active.marc_model = request.POST.get('marc_model')
-                active.serie = request.POST.get('serie')
-                active.estade = request.POST.get('estado')
-                active.observations = request.POST.get('Observaciones')
-                active.fecha_registro = user_old.fecha_registro       
-                active.save()
-                return redirect('list_actives')
-            
+        # Obtener el registro específico
+        activo_instance = activo.objects.get(id=idactive)
+
+        if request.method == 'POST':
+            # Actualizar todos los campos del modelo desde los datos del formulario
+            activo_instance.sede = request.POST.get('sede', activo_instance.sede)
+            activo_instance.pabellon = request.POST.get('pabellon', activo_instance.pabellon)
+            activo_instance.tipo_ambiente = request.POST.get('tipo_ambiente', activo_instance.tipo_ambiente)
+            activo_instance.ambiente = request.POST.get('ambiente', activo_instance.ambiente)
+            activo_instance.direccion = request.POST.get('direccion', activo_instance.direccion)
+            activo_instance.distrito = request.POST.get('distrito', activo_instance.distrito)
+            activo_instance.serie = request.POST.get('serie', activo_instance.serie)
+            activo_instance.codigo_inventario = request.POST.get('codigo_inventario', activo_instance.codigo_inventario)
+            activo_instance.categoria = request.POST.get('categoria', activo_instance.categoria)
+            activo_instance.marca = request.POST.get('marca', activo_instance.marca)
+            activo_instance.descripcion = request.POST.get('descripcion', activo_instance.descripcion)
+            activo_instance.modelo = request.POST.get('modelo', activo_instance.modelo)
+            activo_instance.hostname = request.POST.get('hostname', activo_instance.hostname)
+            activo_instance.estado = request.POST.get('estado', activo_instance.estado)
+            activo_instance.renta = request.POST.get('renta', activo_instance.renta)
+            activo_instance.contrato = request.POST.get('contrato', activo_instance.contrato)
+            activo_instance.estado_renta = request.POST.get('estado_renta', activo_instance.estado_renta)
+            activo_instance.proveedor = request.POST.get('proveedor', activo_instance.proveedor)
+            activo_instance.devolucion = request.POST.get('devolucion', activo_instance.devolucion)
+            activo_instance.declaracion = request.POST.get('declaracion', activo_instance.declaracion)
+
+            # Guardar los cambios
+            activo_instance.save()
+            return redirect('list_actives')  # Redirigir a la lista de activos
+
         else:
-            
-            active = active.objects.all()
-            actives_id = active.objects.get(id = idactive)
-            datos = {'activos' : active, 'actives_id': actives_id}
-            return render(request, "crud_actives/update_actives.html",datos)
+            # Enviar el registro actual a la plantilla para editar
+            datos = {'activo_instance': activo_instance}
+            return render(request, "crud_actives/update_actives.html", datos)
 
-    except active.DoesNotExist:
-        active = active.objects.all()
-        actives_id = None
-        datos = {'activos' : active, 'actives_id': actives_id}         
-        return render(request, "crud_actives/update_actives.html",datos)
-
+    except activo.DoesNotExist:
+        # Si el registro no existe, manejar el error y mostrar un mensaje
+        return render(request, "crud_actives/update_actives.html", {
+            'error': 'El activo no existe.'
+        })
 
 
 
@@ -628,67 +641,125 @@ def delete_user(request, iduser):
 
 #============FUNCIONES ANIDADADES DEL GENERADOR DEL ACTA DE ENTREGA====#
 
+
 def generar_acta_entrega(request, iduser, user_id):
-    user = obtener_trabajador(user_id)
-    keyword = request.POST.get('keyword', '')  # Obtén la palabra clave de la solicitud POST
-    activos_list = obtener_activos().exclude(declaracion='ASIGNADO')
-    
-    if keyword:  # Si hay una palabra clave, filtra los activos
-        activos_list = activos_list.filter(
-            Q(categoria__icontains=keyword) |
-            Q(descripcion__icontains=keyword) |
-            Q(modelo__icontains=keyword) |
-            Q(estado__icontains=keyword)
-        )
-    
-    paginator = Paginator(activos_list, 10)  # 10 activos por página
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    if request.method == 'POST' and 'generar_acta' in request.POST:
-        usuario = obtener_usuario(iduser)
-        contador = obtener_contador()
-        activos_seleccionados = request.POST.getlist('activo')
-        activos_entregados = activo.objects.filter(pk__in=activos_seleccionados)
-        asignaciones = AsignacionActivo.objects.filter(usuario=usuario)
-        
-        asignaciones_agrupadas = agrupar_asignaciones_por_fecha(asignaciones)
-        
-        for activo_entregado in activos_entregados:
-            
-            asignar_activo_a_usuario(usuario, activo_entregado)
-            activo_entregado.declaracion = 'ASIGNADO'  # Actualiza el estado del activo
-            activo_entregado.save()
- 
-        
-        actualizar_contador()
-        convertir_campos_a_mayusculas(activos_entregados)
-        
-        doc = crear_documento(usuario, contador, asignaciones_agrupadas, activos_entregados, user)
-        
-        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-        response['Content-Disposition'] = f'attachment; filename=acta_entrega_{contador}.docx'
-        response.write(document_to_bytes(doc))
-       
-        # return redirect('acta_entrega/acta_entrega.html', user_id=user_id, iduser=iduser) 
-        return response
-        # return redirect(f'/detail_active/{iduser}')
-    
-        # return redirect(f'/generar_acta_entrega/{iduser}/{user_id}/')
-    
-    else:
+    try:
         user = obtener_trabajador(user_id)
         usuario = obtener_usuario(iduser)
         contador = obtener_contador()
-        context = {'user':user,
-                   'usuario': usuario,
-                   'page_obj': page_obj,
-                   'contador': contador,
-                   'keyword': keyword,
-                   'archivo_generado': True
-                   }
+        keyword = request.POST.get('keyword', '')
         
-    return render(request, 'acta_entrega/acta_entrega.html', context)
+        # Filtrar activos disponibles
+        activos_list = obtener_activos().exclude(declaracion='ASIGNADO')
+        if keyword:
+            activos_list = activos_list.filter(
+                Q(categoria__icontains=keyword) |
+                Q(descripcion__icontains=keyword) |
+                Q(modelo__icontains=keyword) |
+                Q(estado__icontains=keyword)
+            )
+
+        # Paginación
+        paginator = Paginator(activos_list, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # Manejo de POST para generar acta
+        if request.method == 'POST' and 'generar_acta' in request.POST:
+            activos_seleccionados = request.POST.getlist('activo')
+            if not activos_seleccionados:
+                messages.error(request, "Debe seleccionar al menos un activo para generar el acta.")
+                return redirect('acta_entrega')  # Ajusta el nombre según tu URL
+
+            # Procesar activos seleccionados
+            activos_entregados = activo.objects.filter(pk__in=activos_seleccionados)
+            asignaciones_agrupadas = agrupar_asignaciones_por_fecha(
+                AsignacionActivo.objects.filter(usuario=usuario)
+            )
+
+            for activo_entregado in activos_entregados:
+                asignar_activo_a_usuario(usuario, activo_entregado)
+                activo_entregado.declaracion = 'ASIGNADO'
+                activo_entregado.save()
+
+            # Crear documento
+            doc = crear_documento(usuario, contador, asignaciones_agrupadas, activos_entregados, user)
+            acta_bytes = document_to_bytes(doc)  # Convierte el documento a bytes
+            
+            # Guardar el archivo en la base de datos
+            acta = actaEntrega(usuario=usuario, archivo_word=ContentFile(acta_bytes, name=f'acta_entrega_{contador}.docx'))
+            acta.save()
+        
+        
+            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            response['Content-Disposition'] = f'attachment; filename=acta_entrega_{contador}.docx'
+            response.write(document_to_bytes(doc))
+            actualizar_contador()
+            
+            # Obtener correos electrónicos
+            correo_corporativo_adryan = usuario.correo_corporativo_adryan  # Desde UserData
+            correo_trabajador = user.email  # Desde user
+            destinatarios = [correo_corporativo_adryan, correo_trabajador]
+            # Extraer los valores necesarios
+            apellidos_y_nombres_adryan = usuario.apellidos_y_nombres_adryan
+            first_name = user.first_name
+            # Enviar correos en segundo plano
+            Thread(
+                target=enviar_correos_en_segundo_plano, 
+                args=(destinatarios, acta_bytes, contador, apellidos_y_nombres_adryan, first_name)
+            ).start()
+
+            return response
+
+        # Renderizar la página con el formulario
+        context = {
+            'user': user,
+            'usuario': usuario,
+            'page_obj': page_obj,
+            'contador': contador,
+            'keyword': keyword,
+        }
+        return render(request, 'actas_entrega/acta_entrega.html', context)
+
+    except Exception as e:
+        messages.error(request, f"Ha ocurrido un error: {str(e)}")
+        return redirect('acta_entrega')  # Ajusta según tu configuración
+
+
+def enviar_correos_en_segundo_plano(destinatarios, acta_bytes, contador, apellidos_y_nombres_adryan, first_name):
+    """
+    Envía los correos con el acta adjunta en un hilo separado.
+    """
+    try:
+        email = EmailMessage(
+            subject=f"Acta de entrega #{contador}",
+            body=f"""\
+                Estimado(a) {apellidos_y_nombres_adryan},
+
+                Adjunto encontrará el acta de entrega generada automáticamente. 
+                Para garantizar una mejor visualización del contenido, le recomendamos descargar el archivo adjunto y abrirlo en un visor compatible con documentos Word (.docx).
+
+                Si tiene alguna consulta o necesita asistencia, no dude en ponerse en contacto.
+
+                Saludos cordiales,
+                {first_name}
+                            """,
+            from_email='quitoespirituleonardo@gmail.com',
+            to=destinatarios,
+        )
+
+        # Adjuntar archivo
+        email.attach(
+            f"acta_entrega_{contador}.docx",
+            acta_bytes,
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+        email.send()
+    except Exception as e:
+        # Aquí puedes registrar el error si falla el envío del correo
+        print(f"Error enviando correo: {e}")
+
+
 
 
 def obtener_usuario(iduser):
@@ -716,8 +787,6 @@ def agrupar_asignaciones_por_fecha(asignaciones):
     for fecha, asignaciones_fecha in groupby(asignaciones, key=attrgetter('fecha_asignacion.date')):
         asignaciones_agrupadas.append((fecha, list(asignaciones_fecha)))
     return asignaciones_agrupadas
-    
-    
     
     
 #VARIABLES DE ASIGNACION
@@ -821,7 +890,6 @@ def document_to_bytes(doc):
 
 
 #----------------------EXPORTAR E IMPORTAR ARCHIVOS--------------------#
-
 def import_usuarios(request):
     if request.method == 'POST':
         excel_file = request.FILES.get('excel_usuarios')
@@ -1009,23 +1077,24 @@ def export(request):
 
 
 
-def info_acta(request, iduser):
-    user = user.objects.get(pk=iduser)
-    actas_entrega = acta_entrega.objects.filter(Users=user)
+def ver_actas_entrega(request, user_id):
+    try:
+        # Obtener todas las actas de entrega
+        usuario = get_object_or_404(UserData, pk=user_id)
+        
+        # Filtrar las actas que pertenecen a este usuario
+        actas = actaEntrega.objects.filter(usuario=usuario)
 
-    if request.method == 'POST':
-        form = ActaEntregaForm(request.POST, request.FILES)
-        if form.is_valid():
-            acta_entrega = form.save(commit=False)
-            acta_entrega.Users = user
-            acta_entrega.save()
-            return redirect('info_acta', iduser=user.id)
+        context = {
+            'actas': actas,
+            'usuario': usuario,  # Pasar el usuario al contexto
+        }
+        return render(request, 'Informacion_Actas/ver_actas.html', context)
+    except Exception as e:
+        messages.error(request, f"Error al obtener las actas de entrega: {str(e)}")
+        return redirect('home')  # Ajusta la URL de destino si es necesario
 
 
-    else:
-        form = ActaEntregaForm()
-
-    return render(request, 'Info/info_acta.html', {'user': user, 'actas_entrega': actas_entrega, 'form': form})
 
 def delete_ActaEntrega(request, idacta):
     if request.method == 'POST':

@@ -40,7 +40,7 @@
           <td>{{ u.direccion }}</td>
           <td class="{% if u.declaracion == 'ASIGNADO' %}declaracion-asignado{% elif u.declaracion == 'ACTIVO' %}declaracion-activo{% else %}declaracion-default{% endif %}">{{ u.declaracion }}</td>
           <td>
-            {% if request.user.username == "lquito" %}
+            {% if request.user.username == "totaladmin" %}
             <button class="btn btn-warning" onclick="window.location.href='update_actives/{{ u.id }}'"><i class="fa fa-refresh"></i></button>
             <button class="btn btn-danger" onclick="window.location.href='delete_actives/{{ u.id }}'"><i class="fa fa-trash"></i></button>
             {% endif %}

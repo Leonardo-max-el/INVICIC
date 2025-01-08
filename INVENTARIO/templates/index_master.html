@@ -8,6 +8,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
 	<link rel="icon" href="images/server.png" type="image/ico" />
 
     <title>Inventario </title>
@@ -43,9 +44,6 @@
             <div class="navbar nav_title" style="border: 0;">
               <a href="http://localhost:8000" class="site_title"> <span>I.S.T CONTINENTAL</span></a>
             </div>
-
-            <div class="clearfix"></div>
-
             <!-- menu profile quick info -->
             <div class="profile clearfix">
               <div class="profile_pic">
@@ -81,7 +79,7 @@
                       {% if user.is_authenticated %}
                       <li><a href="{% url 'list_user' %}"><i class="fa fa-list" aria-hidden="true"></i>Listar</a></li>
                       {% endif %}
-                      {% if request.user.username == "lquito" %}
+                      {% if request.user.username == "totaladmin" %}
                       <li><a href="{% url 'add_user' %}"><i class="fa fa-plus" aria-hidden="true"></i>Agregar</a></li>
                       <li><a href="{% url 'list_user' %}"><i class="fa fa-refresh" aria-hidden="true"></i>Actualizar</a></li>
                       <li><a href={% url 'list_user' %}><i class="fa fa-trash" aria-hidden="true"></i>Eliminar</a></li>
@@ -96,7 +94,7 @@
                         <li><a href="{% url 'list_actives' %}"><i class="fa fa-list" aria-hidden="true"></i>Listar</a></li>
                       {% endif %}
                         
-                      {% if request.user.username == "lquito" %}
+                      {% if request.user.username == "totaladmin" %}
                         <li><a href="{% url 'add_actives' %}"><i class="fa fa-plus" aria-hidden="true"></i>Agregar</a></li>
                         <li><a href={% url 'list_actives' %}><i class="fa fa-refresh" aria-hidden="true"></i>Actualizar</a></li>
                         <li><a href={% url 'list_actives' %}><i class="fa fa-trash" aria-hidden="true"></i>Eliminar</a></li>
@@ -198,23 +196,59 @@
 
     <!-- Custom Theme Scripts -->
     <script src="{% static '/FrWork/admin_lte/build/js/custom.min.js' %}"></script>
-	
-    <script>
-      // Detectar el cierre de sesión
-      function checkSession() {
-          fetch(window.location.href, { method: 'GET', credentials: 'same-origin' })
-              .then(response => {
-                  if (response.redirected) {
-                      // Si la sesión se cerró, redirigir o recargar la página
-                      window.location.href = response.url;
-                  }
-              });
+
+<!-- Alerta de cierre de sesión -->
+<div id="logoutAlert" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+  <p>Su sesión expirará en <span id="countdown">5</span> segundos.</p>
+  <button onclick="cancelSession()" style="margin-top: 10px;">Cancelar</button>
+  <button onclick="forceLogout()" style="margin-top: 10px;">Aceptar</button>
+</div>
+
+<div id="overlay" style="display: none;"></div>
+
+<div id="alertaSesion" class="alerta">
+    <p>Tu sesión está a punto de expirarse. ¿Deseas continuar?</p>
+    <button id="aceptar">Aceptar</button>
+    <button id="cancelar">Cancelar</button>
+    <p id="contador">5</p>
+<script>
+
+  let countdown = 5;  // Tiempo de conteo regresivo
+  let countdownInterval;  // Variable para controlar el intervalo
+
+  // Función para mostrar la alerta de cierre de sesión
+  function showLogoutAlert() {
+      document.getElementById('logoutAlert').style.display = 'block';
+      countdownInterval = setInterval(updateCountdown, 1000);  // Actualizar el conteo cada segundo
+  }
+
+  // Función para actualizar el conteo regresivo
+  function updateCountdown() {
+      countdown--;
+      document.getElementById('countdown').textContent = countdown;
+
+      if (countdown === 0) {
+          clearInterval(countdownInterval);  // Detener el conteo
+          forceLogout();  // Redirigir al login si el tiempo se agotó
       }
+  }
 
-      // Verificar cada 10 segundos si la sesión sigue activa
-      setInterval(checkSession, 10000);
-  </script>
+  // Función para cancelar el cierre de sesión
+  function cancelSession() {
+      clearInterval(countdownInterval);  // Detener el conteo
+      document.getElementById('logoutAlert').style.display = 'none';  // Ocultar la alerta
+  }
 
+  // Función para forzar el cierre de sesión
+  function forceLogout() {
+      clearInterval(countdownInterval);  // Detener el conteo
+      // Redirigir al login o hacer el logout (dependiendo de tu configuración)
+      window.location.href = '{% url 'login' %}';  // Ajusta la ruta del login según tu proyecto
+  }
+
+  // Simular el cierre de sesión si no hay actividad (se puede llamar a `showLogoutAlert()` cuando sea necesario)
+  setTimeout(showLogoutAlert, 300000);  // Muestra la alerta después de 30 segundos (simulando inactividad)
+</script>
 
   </body>
 </html>

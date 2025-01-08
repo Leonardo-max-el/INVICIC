@@ -102,8 +102,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'lquito@continental.edu.pe'
-EMAIL_HOST_PASSWORD = 'qrqs seyq jiol kbjr'
+EMAIL_HOST_USER = 'quitoespirituleonardo@gmail.com'
+EMAIL_HOST_PASSWORD = 'vkvu iiva kqoq xgcq'
 
 
 PER_PAGE = 10
@@ -161,3 +161,5 @@ SESSION_COOKIE_AGE = 900  # 15 minutos
 
 # Desactiva la persistencia de la sesión si el usuario cierra el navegador
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000  # Cambia este valor según tus necesidades

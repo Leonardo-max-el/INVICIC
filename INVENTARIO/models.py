@@ -117,13 +117,11 @@ class AsignacionActivo(models.Model):
 class actaEntrega(models.Model):
     id = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(UserData, on_delete=models.CASCADE)  # Establece la relación con la tabla de usuarios
-    archivo_pdf = models.FileField(upload_to='actas_entrega_pdfs/')
+    archivo_word = models.FileField(upload_to='actas_entrega', null=True, blank=True)  # Permitir valores nulos
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
-    
     def __str__(self):
         return f'Acta de entrega para {self.usuario.apellidos_y_nombres_adryan}'
-
 
 
 class delivery_record(models.Model):

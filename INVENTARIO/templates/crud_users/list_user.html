@@ -47,13 +47,15 @@
       <td>
 
         
-        {% if request.user.username == "lquito" %}
+        {% if request.user.username == "totaladmin" %}
         <button class="btn btn-warning" onclick="window.location.href='update_user/{{ u.id }}' "><i class="fa fa-refresh"></i> </button>
         <button class="btn btn-danger" onclick="window.location.href='delete_user/{{ u.id }}'"><i class="fa fa-trash"></i> </button>
         {% endif %}
         {% if user.is_authenticated %}
         <button name="acta" class="btn btn-primary" onclick="window.location.href='data_user/{{ u.id }}'"><i class="fa fa-eye" aria-hidden="true"></i></button> 
-        {% comment %} <button class="btn btn-info" onclick="window.location.href='info_acta/{{ u.id }}'"><i class="fa fa-envelope-o"></i> </button> {% endcomment %}
+        {% endif %}
+        {% if request.user.username == "totaladmin" %}
+        <button class="btn btn-info" onclick="window.location.href='{% url 'ver_actas_entrega' u.id %}'"><i class="fa fa-envelope-o"></i> </button>
         {% endif %}
         
 

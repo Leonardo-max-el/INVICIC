@@ -3,7 +3,7 @@
 {% block content %}
 <div class="right_col" role="main">
   <div>   
-    <h3>Acta de Entrega para: {{ usuario.apellidos_y_nombres_adryan }}</h3>
+    <h3>Acta de Entrega para: {{ usuario.apellidos_y_nombres_adryan }} {{user.email}}</h3>
   </div>
   <form id="form-generar-acta" action="" method="POST">
     {% csrf_token %}
@@ -81,6 +81,7 @@
         </ul>
       </nav>
     </div>
+
     <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"><i class="fa fa-arrow-left"></i> Volver</button>
     <button type="submit" class="btn btn-primary" name="generar_acta"><i class="fa fa-file"></i> Generar Word</button>
   </form>

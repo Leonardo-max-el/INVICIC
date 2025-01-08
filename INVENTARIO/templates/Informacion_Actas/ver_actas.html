@@ -1,0 +1,39 @@
+{% extends 'index_master.html'%}
+
+{% block content %}
+
+
+<form>
+    {% csrf_token %}
+    <div class="right_col" role="main">
+        <h4>Actas de Entrega de {{ usuario.apellidos_y_nombres_adryan }}</h4>
+
+        {% if actas %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID Acta</th>
+                        <th>Archivo Acta</th>
+                        <th>Fecha de Registro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for acta in actas %}
+                        <tr>
+                            <td>{{ acta.id }}</td>
+                            <td>
+                                <li>
+                                    <a href="{{  acta.archivo_word.url }}" target="_blank"> Acta de entrega {{ acta.fecha_registro }} </a>
+                            </td>
+                            <td>{{ acta.fecha_registro }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No se han generado actas de entrega aún para este usuario.</p>
+        {% endif %}
+        <button name="back" class="btn btn-secondary" onclick="history.back(); return false;"> <i class="fa fa-arrow-left"> Volver</i> </button>
+    </div>
+</form>
+{% endblock %}

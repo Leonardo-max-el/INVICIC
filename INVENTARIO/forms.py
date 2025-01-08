@@ -1,5 +1,5 @@
 from django import forms
-from .models import work
+from .models import work, actaEntrega
 from django.contrib.auth.forms import AuthenticationForm
 
 class RegistroForm(forms.ModelForm):
@@ -18,3 +18,8 @@ class RegistroForm(forms.ModelForm):
 class LoginForm(AuthenticationForm):
     username = forms.EmailField(label='Correo electrónico')
     
+
+class ActaEntregaForm(forms.ModelForm):
+    class Meta:
+        model = actaEntrega
+        fields = ['usuario', 'archivo_word']

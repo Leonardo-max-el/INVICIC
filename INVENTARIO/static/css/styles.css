@@ -22,3 +22,32 @@
 .declaracion-default {
     color: #333;
 }
+
+/* El overlay cubre toda la pantalla y bloquea la interacción */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+    z-index: 999;  /* Asegura que esté sobre otros elementos */
+    display: none; /* Oculto por defecto */
+}
+
+/* El estilo de la alerta */
+.alerta {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    display: none; /* Oculto por defecto */
+}
+
+.alerta button {
+    margin: 10px;
+}
